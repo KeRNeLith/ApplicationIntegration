@@ -3,14 +3,23 @@ package fr.elfoa.entities;
 import java.util.*;
 
 /**
+ * Class that store a association of todos and a given id.
  * @author Pierre Colomb
  */
-public class TodoList {
+public class TodoList 
+{
+    /**
+     * Association of an Id and a todo task.
+     */
+    private final Map<Integer, Todo> todos = new HashMap<>();
 
-
-    private final Map<Integer,Todo> todos = new HashMap<>();
-
-    public TodoList add(Todo todo){
+    /**
+     * Add a todo in the list of todos.
+     * @param todo Todo to add.
+     * @return The current todo list with the todo added.
+     */
+    public TodoList add(Todo todo)
+    {
         Integer id = todos.keySet()
                           .stream()
                           .max(Comparator.naturalOrder())
@@ -21,52 +30,89 @@ public class TodoList {
         return this;
     }
 
-    public TodoList add(Integer id,Todo todo){
+    /**
+     * Add or update (if the id already exists) the given todo to the todo list.
+     * @param id Todo's Id.
+     * @param todo Todo to add.
+     * @return The current todo list with the todo added.
+     */
+    public TodoList add(Integer id, Todo todo)
+    {
         todos.put(id,todo);
         return this;
     }
 
-    public TodoList done(Integer id){
+    /**
+     * Set the todo with the given Id as done (if it exists).
+     * @param id Todo's Id.
+     * @return The current todo list.
+     */
+    public TodoList done(Integer id)
+    {
         Todo todo = todos.get(id);
 
-        if(todo != null){
+        if(todo != null)
+        {
             todo.setDone(true);
         }
 
         return this;
     }
 
-    public TodoList unDone(Integer id){
+    /**
+     * Set the todo with the given Id as not done (if it exists).
+     * @param id Todo's Id.
+     * @return The current todo list.
+     */
+    public TodoList unDone(Integer id)
+    {
         Todo todo = todos.get(id);
 
-        if(todo != null){
+        if(todo != null)
+        {
             todo.setDone(false);
         }
 
         return this;
     }
 
-    public Todo update(Integer id,Todo todo){
+    /**
+     * Update the todo corresponding to the given Id.
+     * @param id Todo's Id.
+     * @param todo Todo to update.
+     * @return Updated todo.
+     */
+    public Todo update(Integer id, Todo todo)
+    {
         return todos.replace(id,todo);
     }
 
-
-    public Todo delete(Integer id){
+    /**
+     * Delete the todo corresponding to the given id.
+     * @param id Todo's Id.
+     * @return Todo removed.
+     */
+    public Todo delete(Integer id)
+    {
         return todos.remove(id);
     }
 
-
-
-    public Todo getbyId(Integer id){
+    /**
+     * Get a todo based on its Id.
+     * @param id Todo's Id.
+     * @return The todo corresponding to the given Id if it exists, otherwise null.
+     */
+    public Todo getbyId(Integer id)
+    {
         return todos.get(id);
     }
 
-    public Collection<Todo> getAll(){
+    /**
+     * Get the list of all todo tasks.
+     * @return Collection of todos.
+     */
+    public Collection<Todo> getAll()
+    {
         return todos.values();
     }
-
-
-
-
-
 }

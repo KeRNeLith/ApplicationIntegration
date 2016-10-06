@@ -3,50 +3,80 @@ package fr.elfoa.entities;
 import java.util.Date;
 
 /**
+ * Class that store informations about a todo task.
  * @author Pierre Colomb
  */
-public class Todo {
-
-
+public class Todo 
+{
+    /**
+     * Name of the todo.
+     */
     private final String name;
 
+    /**
+     * Due date of the todo.
+     */
     private final Date dueDate;
 
+    /**
+     * State "done" or not of the todo task.
+     */
     private boolean done = false;
 
-
-
-    public Todo(String name, Date dueDate) {
+    /**
+     * Constructor.
+     * @param name Name of the todo.
+     * @param dueDate Date when the todo should be finished.
+     */
+    public Todo(String name, Date dueDate) 
+    {
         this.name = name;
         this.dueDate = dueDate;
     }
 
-    public Todo(String name) {
-        this.name = name;
-        this.dueDate = null;
+    /**
+     * Constructor.
+     * This initialization will have no due date defined.
+     * @param name Name of the todo
+     */
+    public Todo(String name) 
+    {
+        this(name, null);
     }
 
-
-
-    public String getName() {
+    /**
+     * Get the name of the todo task.
+     * @return Todo name.
+     */
+    public String getName() 
+    {
         return name;
     }
 
-
-
-    public Date getDueDate() {
+    /**
+     * Get the date when the todo should be finished.
+     * @return Due date.
+     */
+    public Date getDueDate() 
+    {
         return dueDate;
     }
 
-
-
-    public boolean isDone() {
+    /**
+     * Get the "done" state of the todo.
+     * @return True if the todo is done.
+     */
+    public boolean isDone()
+    {
         return done;
     }
 
-
-
-    public void setDone(boolean done) {
+    /**
+     * Set the todo as done or not.
+     * @param done State done of the todo.
+     */
+    public void setDone(boolean done)
+    {
         this.done = done;
     }
 }
