@@ -1,4 +1,5 @@
 #Maven
+log/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -12,4 +13,12 @@ buildNumber.properties
 # Netbeans
 nb-configuration.xml
 
+# Intellij
+.idea/
+*.iml
+*.iws
+out/
+
 # Other
+doc/
+
