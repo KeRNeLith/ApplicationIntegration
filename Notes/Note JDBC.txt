@@ -1,0 +1,2 @@
+Le classpath d'un serveur Glassfish Payara se trouve dans le dossier :
+/path/to/payara/glassfish/lib
