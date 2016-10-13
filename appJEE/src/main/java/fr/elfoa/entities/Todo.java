@@ -1,26 +1,42 @@
 package fr.elfoa.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
  * Class that store informations about a todo task.
  * @author Pierre Colomb
  */
-public class Todo 
+@Entity
+public class Todo
 {
+    /**
+     * ID of the todo.
+     */
+    @Id
+    @GeneratedValue
+    @Column(name = "id_todo")
+    private Integer id;
+
     /**
      * Name of the todo.
      */
-    private final String name;
+    @Column(name = "name")
+    private String name;
 
     /**
      * Due date of the todo.
      */
+    @Column(name = "due_date")
     private final Date dueDate;
 
     /**
      * State "done" or not of the todo task.
      */
+    @Column(name = "done")
     private boolean done = false;
 
     /**
@@ -28,8 +44,9 @@ public class Todo
      * @param name Name of the todo.
      * @param dueDate Date when the todo should be finished.
      */
-    public Todo(String name, Date dueDate) 
+    public Todo(String name, Date dueDate)
     {
+
         this.name = name;
         this.dueDate = dueDate;
     }
@@ -39,7 +56,7 @@ public class Todo
      * This initialization will have no due date defined.
      * @param name Name of the todo
      */
-    public Todo(String name) 
+    public Todo(String name)
     {
         this(name, null);
     }
@@ -48,7 +65,7 @@ public class Todo
      * Get the name of the todo task.
      * @return Todo name.
      */
-    public String getName() 
+    public String getName()
     {
         return name;
     }
@@ -57,7 +74,7 @@ public class Todo
      * Get the date when the todo should be finished.
      * @return Due date.
      */
-    public Date getDueDate() 
+    public Date getDueDate()
     {
         return dueDate;
     }

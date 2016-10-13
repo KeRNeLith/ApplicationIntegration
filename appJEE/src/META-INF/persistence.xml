@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<persistence>
+    <persistence-unit name="defaultPersistanceUnit" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>jdbc/tp_iae</jta-data-source>
+        <class>fr.elfoa.entities.Todo</class>
+
+        <properties>
+            <property name="eclipselink.logging.level" value="FINE" />
+
+            <property name="eclipselink.target-database" value="tp_iae" />
+
+            <!-- JDBC connection properties -->
+            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/tp_iae"/>
+            <property name="eclipselink.jdbc.user" value="appJEE"/>
+            <property name="eclipselink.jdbc.password" value="password"/>
+
+            <property name="eclipselink.ddl-generation"
+                      value="drop-and-create-tables" />
+        </properties>
+    </persistence-unit>
+</persistence>
