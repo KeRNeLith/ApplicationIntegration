@@ -1,6 +1,7 @@
 package fr.elfoa.ws;
 
 import fr.elfoa.database.DatabaseUtils;
+import fr.elfoa.database.UserDBAccess;
 import fr.elfoa.utils.JNDIUtils;
 
 import javax.ws.rs.GET;
@@ -45,29 +46,6 @@ public class HelloWorld
     @GET
     public String sayHello(@PathParam("id") Integer id)
     {
-        String ret = "Nobody matching id = " + id + ".";
-
-        PreparedStatement ps;
-        try
-        {
-            ps = DatabaseUtils.getConnection().prepareStatement("SELECT name FROM user WHERE id = ?;");
-            ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next())
-            {
-                int NAME = 1;
-                ret = rs.getString(NAME);
-                rs.close();
-            }
-
-            ps.close();
-        }
-        catch (SQLException e)
-        {
-            System.err.println("There is a problem with the connection to database.");
-        }
-
-        return ret;
+        return UserDBAccess.getUserName(id);
     }
 }
