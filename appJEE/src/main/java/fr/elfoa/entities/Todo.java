@@ -1,9 +1,6 @@
 package fr.elfoa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -11,6 +8,7 @@ import java.util.Date;
  * @author Pierre Colomb
  */
 @Entity
+@Table(name = "todo")
 public class Todo
 {
     /**
@@ -38,6 +36,12 @@ public class Todo
      */
     @Column(name = "done")
     private boolean done = false;
+
+    /**
+     * User associated to the todo.
+     */
+    @ManyToOne
+    private User user;
 
     /**
      * Constructor.

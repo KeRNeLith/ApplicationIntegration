@@ -1,5 +1,6 @@
 package fr.elfoa.ws;
 
+import fr.elfoa.entities.ManagedTodo;
 import fr.elfoa.entities.Todo;
 import fr.elfoa.entities.TodoList;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -9,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +39,26 @@ public class TodoListWS
         todos.add(1, new Todo("foo"))
              .add(2, new Todo("bar"))
              .add(3, new Todo("wiz"));
+    }
+
+    /**
+     * Route to create a new todo to be added in the todo list.
+     *
+     */
+    @Path("yolo/{id}")
+    @GET
+    public String create2(@PathParam("id") Integer id)
+    {
+        try{
+            ManagedTodo mt = new ManagedTodo();
+            Todo todo = mt.createTodo("yolo");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+        return "ok";
     }
 
     /**

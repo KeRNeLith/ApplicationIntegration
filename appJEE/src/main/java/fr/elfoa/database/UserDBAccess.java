@@ -13,6 +13,7 @@ public class UserDBAccess
     /**
      * Get the user name from it's id.
      * @param userId Id of the searched user.
+     * @return User name if it exists.
      */
     public static String getUserName(int userId)
     {

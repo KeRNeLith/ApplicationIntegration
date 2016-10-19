@@ -11,25 +11,34 @@ import javax.persistence.Persistence;
 public class EntityManagerUtils
 {
     /**
-     * EntityManagerFactory used to use persistance.
+     * EntityManagerFactory used to use persistence.
      */
-    private static EntityManagerFactory emf = null;
+    private static EntityManagerFactory m_emf = null;
 
     /**
-     * EntityManager used to use CRUD on entities.
+     * EntityManager used to use JPA to handle entities.
      */
-    private static EntityManager em = null;
+    private static EntityManager m_em = null;
 
-    static {
-        emf = Persistence.createEntityManagerFactory("defaultPersistanceUnit");
-        em = emf.createEntityManager();
+    static
+    {
+        try
+        {
+            m_emf = Persistence.createEntityManagerFactory("myPersistenceUnit");
+            m_em = m_emf.createEntityManager();
+        }
+        catch (Exception e)
+        {
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
     /**
-     * Get the EntityManager
-     * @return EntityManager
+     * Get the EntityManager.
+     * @return EntityManager.
      */
-    public static EntityManager getEntityManager() {
-        return em;
+    public static EntityManager getEntityManager()
+    {
+        return m_em;
     }
 }
