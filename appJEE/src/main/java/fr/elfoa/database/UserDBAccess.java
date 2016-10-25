@@ -22,7 +22,7 @@ public class UserDBAccess
         PreparedStatement ps;
         try
         {
-            ps = DatabaseUtils.getConnection().prepareStatement("SELECT name FROM user WHERE id = ?;");
+            ps = DatabaseUtils.getConnection().prepareStatement("SELECT name FROM user WHERE id_user = ?;");
             ps.setInt(1, userId);
 
             ResultSet rs = ps.executeQuery();
@@ -38,6 +38,7 @@ public class UserDBAccess
         catch (SQLException e)
         {
             System.err.println("There is a problem with the connection to database.");
+            e.printStackTrace();
         }
 
         return ret;

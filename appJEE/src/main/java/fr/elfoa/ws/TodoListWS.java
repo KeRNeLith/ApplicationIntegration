@@ -1,8 +1,6 @@
 package fr.elfoa.ws;
 
-import fr.elfoa.entities.ManagedTodo;
-import fr.elfoa.entities.Todo;
-import fr.elfoa.entities.TodoList;
+import fr.elfoa.entities.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ejb.EJB;
@@ -31,7 +29,13 @@ public class TodoListWS
     /**
      * Manager of todo : EJB.
      */
-    private ManagedTodo m_mt;
+    private ManagedTodo m_todoManager;
+
+    @EJB
+    /**
+     * Manager of user : EJB.
+     */
+    private ManagedUser m_userManager;
 
     /**
      * List of todos.
@@ -46,29 +50,6 @@ public class TodoListWS
         todos.add(1, new Todo("foo"))
              .add(2, new Todo("bar"))
              .add(3, new Todo("wiz"));
-    }
-
-    /**
-     * Route to create a new todo to be added in the todo list.
-     *
-     */
-    @Path("yolo/{id}")
-    @GET
-    public String create2(@PathParam("id") Integer id)
-    {
-        String ret;
-        try
-        {
-            Todo todo = m_mt.createTodo("yolo");
-            ret = todo.getName();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            ret = e.getMessage();
-        }
-
-        return ret;
     }
 
     /**
@@ -140,5 +121,31 @@ public class TodoListWS
         {
             todos.unDone(id);
         }
+    }
+
+    /**
+     * Route to create a new todo to be added in the todo list.
+     *
+     */
+    @Path("affectTodo/{userId}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String affectTodo(@FormParam("userId") Integer idUser, @FormParam("todo") Todo todo)
+    {
+        // TODO correct this
+        String ret;
+        try
+        {
+            User user = m_userManager.readUser(idUser);
+            user.addTodo(todo);
+            ret = "Todo affected to user " + user.getName();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            ret = e.getMessage();
+        }
+
+        return ret;
     }
 }

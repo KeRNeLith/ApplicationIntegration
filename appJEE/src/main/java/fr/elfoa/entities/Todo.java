@@ -1,6 +1,9 @@
 package fr.elfoa.entities;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 /**
@@ -9,6 +12,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "todo")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+// TODO correct serialization
 public class Todo
 {
     /**
