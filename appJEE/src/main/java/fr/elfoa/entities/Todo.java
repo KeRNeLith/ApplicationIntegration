@@ -44,6 +44,14 @@ public class Todo
     private User user;
 
     /**
+     * Constructeur par défaut.
+     */
+    public Todo()
+    {
+        this("Default");
+    }
+
+    /**
      * Constructor.
      * @param name Name of the todo.
      * @param dueDate Date when the todo should be finished.

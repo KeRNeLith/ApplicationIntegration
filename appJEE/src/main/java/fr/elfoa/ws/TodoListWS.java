@@ -5,6 +5,7 @@ import fr.elfoa.entities.Todo;
 import fr.elfoa.entities.TodoList;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -25,6 +26,12 @@ public class TodoListWS
      * Logger for todo list web service.
      */
     private static final Logger LOG = Logger.getLogger(TodoListWS.class.getCanonicalName());
+
+    @EJB
+    /**
+     * Manager of todo : EJB.
+     */
+    private ManagedTodo m_mt;
 
     /**
      * List of todos.
@@ -49,16 +56,19 @@ public class TodoListWS
     @GET
     public String create2(@PathParam("id") Integer id)
     {
-        try{
-            ManagedTodo mt = new ManagedTodo();
-            Todo todo = mt.createTodo("yolo");
+        String ret;
+        try
+        {
+            Todo todo = m_mt.createTodo("yolo");
+            ret = todo.getName();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return e.getMessage();
+            ret = e.getMessage();
         }
-        return "ok";
+
+        return ret;
     }
 
     /**

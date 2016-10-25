@@ -1,15 +1,19 @@
 package fr.elfoa.entities;
 
-import fr.elfoa.database.EntityManagerUtils;
-
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Class that store informations about a user (implementing CRUD for JTA).
  * Created by kernelith on 18/10/16.
  */
+@Stateless
 public class ManagedUser
 {
+    @PersistenceContext
+    private EntityManager m_manager;
+
     public User createUser(String name)
     {
         User user = null;
@@ -18,7 +22,7 @@ public class ManagedUser
         {
             user = new User(name); // In Memory
 
-            EntityManagerUtils.getEntityManager().persist(user);   // Managed
+            m_manager.persist(user);   // Managed
         }
         catch (Exception e)
         {
@@ -33,7 +37,7 @@ public class ManagedUser
         User user = null;
         try
         {
-            user = EntityManagerUtils.getEntityManager().find(User.class, id);   // Managed
+            user = m_manager.find(User.class, id);   // Managed
         }
         catch (Exception e)
         {
@@ -49,7 +53,7 @@ public class ManagedUser
 
         try
         {
-            managedUser = EntityManagerUtils.getEntityManager().merge(user); // Managé <= Détaché
+            managedUser = m_manager.merge(user); // Managé <= Détaché
         }
         catch (Exception e)
         {
@@ -63,10 +67,8 @@ public class ManagedUser
     {
         try
         {
-            EntityManager em = EntityManagerUtils.getEntityManager();
-
-            User user = em.find(User.class, id);
-            em.remove(user);
+            User user = m_manager.find(User.class, id);
+            m_manager.remove(user);
         }
         catch (Exception e)
         {

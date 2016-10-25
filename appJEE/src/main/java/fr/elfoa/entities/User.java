@@ -16,7 +16,7 @@ public class User
      */
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "id_user")
     private Integer id;
 
     /**
@@ -30,6 +30,14 @@ public class User
      */
     @OneToMany(mappedBy = "user")
     private List<Todo> todos;
+
+    /**
+     * Constructeur par défaut.
+     */
+    public User()
+    {
+        this("Default");
+    }
 
     /**
      * Constructor.

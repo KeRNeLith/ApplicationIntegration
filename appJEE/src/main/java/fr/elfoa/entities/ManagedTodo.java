@@ -1,16 +1,19 @@
 package fr.elfoa.entities;
 
-
-import fr.elfoa.database.EntityManagerUtils;
-
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Class that store informations about a todo task (implementing CRUD for JTA).
  * Created by kernelith on 18/10/16.
  */
+@Stateless
 public class ManagedTodo
 {
+    @PersistenceContext
+    private EntityManager m_manager;
+
     public Todo createTodo(String name)
     {
         Todo todo = null;
@@ -19,7 +22,7 @@ public class ManagedTodo
         {
             todo = new Todo(name); // In Memory
 
-            EntityManagerUtils.getEntityManager().persist(todo);   // Managed
+            m_manager.persist(todo);   // Managed
         }
         catch (Exception e)
         {
@@ -34,7 +37,7 @@ public class ManagedTodo
         Todo todo = null;
         try
         {
-            todo = EntityManagerUtils.getEntityManager().find(Todo.class, id);   // Managed
+            todo = m_manager.find(Todo.class, id);   // Managed
         }
         catch (Exception e)
         {
@@ -50,7 +53,7 @@ public class ManagedTodo
 
         try
         {
-            managedTodo = EntityManagerUtils.getEntityManager().merge(todo); // Managé <= Détaché
+            managedTodo = m_manager.merge(todo); // Managé <= Détaché
         }
         catch (Exception e)
         {
@@ -64,10 +67,8 @@ public class ManagedTodo
     {
         try
         {
-            EntityManager em = EntityManagerUtils.getEntityManager();
-
-            Todo todo = em.find(Todo.class, id);
-            em.remove(todo);
+            Todo todo = m_manager.find(Todo.class, id);
+            m_manager.remove(todo);
         }
         catch (Exception e)
         {

@@ -3,6 +3,10 @@
 <persistence>
     <persistence-unit name="myPersistenceUnit" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>tp_iaeXA</jta-data-source>
+        <jta-data-source>tp_iae</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes><!-- Découverte des entités non activé sous EclipseLink -->
+        <!-- Nécessaire pour que les tables soient gérées par le contexte de persistance -->
+        <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+        <property name="eclipselink.ddl-generation.output-mode" value="database" />
     </persistence-unit>
 </persistence>
