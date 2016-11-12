@@ -21,4 +21,4 @@ out/
 
 # Other
 doc/
-
+*~	# Temp Files
