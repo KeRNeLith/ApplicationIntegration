@@ -32,6 +32,24 @@ public class ManagedTodo
         return (todo);
     }
 
+    public Todo createTodo(Todo t)
+    {
+        Todo todo = null;
+
+        try
+        {
+            todo = new Todo(t); // In Memory
+
+            m_manager.persist(todo);   // Managed
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return (todo);
+    }
+
     public Todo readTodo(int id)
     {
         Todo todo = null;

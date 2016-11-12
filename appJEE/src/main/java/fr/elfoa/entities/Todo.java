@@ -13,8 +13,6 @@ import java.util.Date;
 @Entity
 @Table(name = "todo")
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-// TODO correct serialization
 public class Todo
 {
     /**
@@ -59,6 +57,16 @@ public class Todo
 
     /**
      * Constructor.
+     * This initialization will have no due date defined.
+     * @param name Name of the todo
+     */
+    public Todo(String name)
+    {
+        this(name, new Date());
+    }
+
+    /**
+     * Constructor.
      * @param name Name of the todo.
      * @param dueDate Date when the todo should be finished.
      */
@@ -70,13 +78,16 @@ public class Todo
     }
 
     /**
-     * Constructor.
-     * This initialization will have no due date defined.
-     * @param name Name of the todo
+     * Constructeur par recopie.
+     * @param todo Todo.
      */
-    public Todo(String name)
+    public Todo(Todo todo)
     {
-        this(name, null);
+        this.id = todo.id;
+        this.name = todo.name;
+        this.done = todo.done;
+        this.dueDate = todo.dueDate;
+        this.user = todo.user;
     }
 
     /**
@@ -113,5 +124,14 @@ public class Todo
     public void setDone(boolean done)
     {
         this.done = done;
+    }
+
+    /**
+     * Set the todo owner.
+     * @param user Owner.
+     */
+    public void setUser(User user)
+    {
+        this.user = user;
     }
 }

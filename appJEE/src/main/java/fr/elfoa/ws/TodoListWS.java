@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -130,14 +131,16 @@ public class TodoListWS
     @Path("affectTodo/{userId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public String affectTodo(@FormParam("userId") Integer idUser, @FormParam("todo") Todo todo)
+    public String affectTodo(@PathParam("userId") Integer idUser, Todo todo)
     {
-        // TODO correct this
         String ret;
         try
         {
             User user = m_userManager.readUser(idUser);
-            user.addTodo(todo);
+
+            todo.setUser(user);
+            m_todoManager.createTodo(todo);
+
             ret = "Todo affected to user " + user.getName();
         }
         catch (Exception e)
