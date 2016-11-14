@@ -1,8 +1,12 @@
 package entities.timeslots;
 
+import entities.persons.Doctor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Class that represent a time slot.
@@ -33,6 +37,19 @@ public class TimeSlot
     private Timestamp m_end;
 
     /**
+     * List of appointments included in the time slot.
+     */
+    @OneToMany
+    private List<Appointment> m_appointments;
+
+    /**
+     * Doctor providing the time slot.
+     */
+    @ManyToOne
+    @Column(name = "doctorId")
+    private Doctor m_doctor;
+
+    /**
      * Default constructor.
      */
     public TimeSlot()
@@ -40,10 +57,13 @@ public class TimeSlot
         Date now = new Date();
         setBegin(new Timestamp(now.getTime()));
         setEnd(new Timestamp(now.getTime()));
+        this.m_appointments = new ArrayList<>();
+        setDoctor(new Doctor());
     }
 
     /**
-     * Beginning date of the time slot.
+     * Get the beginning date of the time slot.
+     * @return Beginning date of the time slot.
      */
     public Timestamp getBegin()
     {
@@ -60,7 +80,8 @@ public class TimeSlot
     }
 
     /**
-     * Ending date of the time slot.
+     * Get the ending date of the time slot.
+     * @return Ending date of the time slot.
      */
     public Timestamp getEnd()
     {
@@ -74,5 +95,32 @@ public class TimeSlot
     public void setEnd(Timestamp end)
     {
         this.m_end = end;
+    }
+
+    /**
+     * Get the list of appointments included in the time slot.
+     * @return List of appointments included in the time slot.
+     */
+    public List<Appointment> getAppointments()
+    {
+        return m_appointments;
+    }
+
+    /**
+     * Get the doctor providing the time slot.
+     * @return Doctor providing the time slot.
+     */
+    public Doctor getDoctor()
+    {
+        return m_doctor;
+    }
+
+    /**
+     * Set the doctor providing the time slot.
+     * @param doctor New doctor.
+     */
+    public void setDoctor(Doctor doctor)
+    {
+        this.m_doctor = doctor;
     }
 }

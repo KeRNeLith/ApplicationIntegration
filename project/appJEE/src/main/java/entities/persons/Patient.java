@@ -1,8 +1,10 @@
 package entities.persons;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import entities.timeslots.Appointment;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that represent a patient.
@@ -14,10 +16,26 @@ import javax.persistence.Table;
 public class Patient extends Person
 {
     /**
+     * List of patient's appointments.
+     */
+    @OneToMany(mappedBy = "m_patient")
+    private List<Appointment> m_appointments;
+
+    /**
      * Default constructor.
      */
     public Patient()
     {
         super();
+        this.m_appointments = new ArrayList<>();
+    }
+
+    /**
+     * Get the list of patient's appointments.
+     * @return List of patient's appointments.
+     */
+    public List<Appointment> getAppointments()
+    {
+        return m_appointments;
     }
 }

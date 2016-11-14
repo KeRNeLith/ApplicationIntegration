@@ -1,5 +1,7 @@
 package entities.timeslots;
 
+import entities.persons.Patient;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -27,15 +29,24 @@ public class Appointment
     private Timestamp m_date;
 
     /**
+     * Patient concerned by the appointment.
+     */
+    @ManyToOne
+    @Column(name = "patientId")
+    private Patient m_patient;
+
+    /**
      * Default constructor.
      */
     public Appointment()
     {
         setDate(new Timestamp(new Date().getTime()));
+        setPatient(new Patient());
     }
 
     /**
-     * Date of the appointment.
+     * Get the date of the appointment.
+     * @return Date of the appointment.
      */
     public Timestamp getDate()
     {
@@ -49,5 +60,23 @@ public class Appointment
     public void setDate(Timestamp date)
     {
         this.m_date = date;
+    }
+
+    /**
+     * Get the patient concerned by the appointment.
+     * @return Patient concerned by the appointment.
+     */
+    public Patient getPatient()
+    {
+        return m_patient;
+    }
+
+    /**
+     * Set the patient concerned by the appointment.
+     * @param patient New concerned Patient.
+     */
+    public void setPatient(Patient patient)
+    {
+        this.m_patient = patient;
     }
 }

@@ -27,6 +27,9 @@ public abstract class Person
     @Column(name = "firstname")
     private String m_firstname;
 
+    /**
+     * Person's last name.
+     */
     @Column(name = "lastname")
     private String m_lastname;
 
@@ -40,7 +43,8 @@ public abstract class Person
     }
 
     /**
-     * Person's first name.
+     * Get the person's first name.
+     * @return Person's first name.
      */
     public String getFirstname()
     {
@@ -57,7 +61,8 @@ public abstract class Person
     }
 
     /**
-     * Person's last name.
+     * Get the person's last name.
+     * @return Person's last name.
      */
     public String getLastname()
     {
