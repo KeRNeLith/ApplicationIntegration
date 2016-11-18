@@ -46,7 +46,7 @@ public class TimeSlot
      * Doctor providing the time slot.
      */
     @ManyToOne
-    @Column(name = "doctorId")
+    @JoinColumn(name = "doctorId")
     private Doctor m_doctor;
 
     /**

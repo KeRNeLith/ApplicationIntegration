@@ -7,7 +7,7 @@ import javax.persistence.*;
  * Created by kernelith on 13/11/16.
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "entityType")
 @DiscriminatorValue("Person")
 @Table(name = "Person")

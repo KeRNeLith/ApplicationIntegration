@@ -32,7 +32,7 @@ public class Appointment
      * Patient concerned by the appointment.
      */
     @ManyToOne
-    @Column(name = "patientId")
+    @JoinColumn(name = "patientId")
     private Patient m_patient;
 
     /**

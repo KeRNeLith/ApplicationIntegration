@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <persistence>
-    <persistence-unit name="myPersistenceUnit" transaction-type="JTA">
+    <persistence-unit name="DOPersistenceUnit" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>doctoroffice</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes><!-- Découverte des entités non activé sous EclipseLink -->
