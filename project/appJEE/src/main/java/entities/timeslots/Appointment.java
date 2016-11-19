@@ -3,7 +3,6 @@ package entities.timeslots;
 import entities.persons.Patient;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -26,7 +25,14 @@ public class Appointment
      * Date of the appointment.
      */
     @Column(name = "date")
-    private Timestamp m_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date m_date;
+
+    /**
+     * Duration of the appointment in minutes.
+     */
+    @Column(name = "duration")
+    private int m_duration;
 
     /**
      * Patient concerned by the appointment.
@@ -40,15 +46,36 @@ public class Appointment
      */
     public Appointment()
     {
-        setDate(new Timestamp(new Date().getTime()));
-        setPatient(new Patient());
+        this(new Date(), 1, new Patient());
+    }
+
+    /**
+     * Constructor.
+     * @param date Date of the appointment.
+     * @param duration Duration of the appointment.
+     * @param patient Concerned patient.
+     */
+    public Appointment(Date date, int duration, Patient patient)
+    {
+        setDate(date);
+        setDuration(duration);
+        setPatient(patient);
+    }
+
+    /**
+     * Get the appointment database id.
+     * @return Database id.
+     */
+    public Long getId()
+    {
+        return m_id;
     }
 
     /**
      * Get the date of the appointment.
      * @return Date of the appointment.
      */
-    public Timestamp getDate()
+    public Date getDate()
     {
         return m_date;
     }
@@ -57,10 +84,29 @@ public class Appointment
      * Set the date of the appointment.
      * @param date New appointment date.
      */
-    public void setDate(Timestamp date)
+    public void setDate(Date date)
     {
         this.m_date = date;
     }
+
+    /**
+     * Get the duration of the appointment.
+     * @return Duration of the appointment.
+     */
+    public int getDuration()
+    {
+        return m_duration;
+    }
+
+    /**
+     * Set the date of the appointment.
+     * @param duration New appointment date.
+     */
+    public void setDuration(int duration)
+    {
+        this.m_duration = duration;
+    }
+
 
     /**
      * Get the patient concerned by the appointment.

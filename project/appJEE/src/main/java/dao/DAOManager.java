@@ -11,6 +11,9 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public abstract class DAOManager
 {
+    /**
+     * Entity manager (injected).
+     */
     @PersistenceContext
     protected EntityManager m_manager;
 

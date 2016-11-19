@@ -43,6 +43,15 @@ public abstract class Person
     }
 
     /**
+     * Get the person database id.
+     * @return Database id.
+     */
+    public Long getId()
+    {
+        return m_id;
+    }
+
+    /**
      * Get the person's first name.
      * @return Person's first name.
      */
