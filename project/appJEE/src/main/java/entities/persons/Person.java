@@ -19,7 +19,7 @@ public abstract class Person
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "personId")
-    private Long m_id;
+    private Integer m_id;
 
     /**
      * Person's first name.
@@ -43,10 +43,20 @@ public abstract class Person
     }
 
     /**
+     * Copy constructor.
+     * @param p Person to copy.
+     */
+    public Person(Person p)
+    {
+        this.setFirstname(p.getFirstname());
+        this.setLastname(p.getLastname());
+    }
+
+    /**
      * Get the person database id.
      * @return Database id.
      */
-    public Long getId()
+    public Integer getId()
     {
         return m_id;
     }

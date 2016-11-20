@@ -4,6 +4,7 @@ import dao.DAOManager;
 import entities.persons.Doctor;
 
 import javax.ejb.Stateless;
+import java.util.List;
 
 /**
  * Class that provide implementation of CRUD for Doctor entity.
@@ -22,9 +23,30 @@ public class ManagedDoctor extends DAOManager
 
         try
         {
-            doctor = new Doctor(); // In Memory
+            doctor = new Doctor();      // In Memory
+            m_manager.persist(doctor);  // Managed
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-            m_manager.persist(doctor);   // Managed
+        return (doctor);
+    }
+
+    /**
+     * Create a new managed doctor entity by copying.
+     * @param doc Doctor to copy.
+     * @return Created entity.
+     */
+    public Doctor createDoctor(Doctor doc)
+    {
+        Doctor doctor = null;
+
+        try
+        {
+            doctor = new Doctor(doc);       // In Memory
+            m_manager.persist(doctor);      // Managed
         }
         catch (Exception e)
         {
@@ -43,6 +65,8 @@ public class ManagedDoctor extends DAOManager
     {
         return readEntity(id, Doctor.class);
     }
+
+    public List<Doctor> getList() { return getList(Doctor.class); }
 
     /**
      * Update data for the given doctor.

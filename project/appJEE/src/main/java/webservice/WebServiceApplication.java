@@ -24,6 +24,7 @@ public class WebServiceApplication extends Application
 
         // Add N web services classes
         service.add(HelloWorld.class);
+        service.add(DoctorAPI.class);
 
         return service;
     }

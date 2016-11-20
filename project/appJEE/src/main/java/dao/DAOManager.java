@@ -3,6 +3,8 @@ package dao;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
 
 /**
  * Basic class for all DAO classes.
@@ -21,7 +23,7 @@ public abstract class DAOManager
      * Get a doctor entity from persistence context.
      * @param id Database doctor id.
      * @param classType Class type of the entity.
-     * @return Doctor entity.
+     * @return The required entity.
      */
     protected <T> T readEntity(int id, Class<T> classType)
     {
@@ -36,6 +38,17 @@ public abstract class DAOManager
         }
 
         return (entity);
+    }
+
+    /**
+     * Get the list of every entity of a type from persistence context.
+     * @param classType Class type of the entity.
+     * @return List of required entities.
+     */
+    protected <T> List<T> getList(Class<T> classType)
+    {
+        Query query = m_manager.createNamedQuery("Doctor.findAll");
+        return query.getResultList();
     }
 
     /**

@@ -2,10 +2,8 @@ package entities.persons;
 
 import entities.timeslots.TimeSlot;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +11,15 @@ import java.util.List;
  * Class that represent a doctor.
  * Created by kernelith on 13/11/16.
  */
+@NamedQueries(
+        {
+                @NamedQuery(
+                        name="Doctor.findAll",
+                        query="select doctor from Doctor doctor")
+        })
 @Entity
 @DiscriminatorValue("Doctor")
+@XmlRootElement
 @Table(name = "Doctor")
 public class Doctor extends Person
 {
@@ -31,6 +36,16 @@ public class Doctor extends Person
     {
         super();
         this.m_timeSlots = new ArrayList<>();
+    }
+
+    /**
+     * Copy constructor.
+     * @param doc Doctor to copy.
+     */
+    public Doctor(Doctor doc)
+    {
+        super(doc);
+        this.m_timeSlots = doc.getTimeSlots();
     }
 
     /**
