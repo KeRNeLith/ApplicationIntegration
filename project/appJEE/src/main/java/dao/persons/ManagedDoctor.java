@@ -61,12 +61,12 @@ public class ManagedDoctor extends DAOManager
      * @param id Database doctor id.
      * @return Doctor entity.
      */
-    public Doctor readDoctor(int id)
+    public Doctor readDoctor(long id)
     {
         return readEntity(id, Doctor.class);
     }
 
-    public List<Doctor> getList() { return getList(Doctor.class); }
+    public List<Doctor> getList() { return getList(Doctor.class, "Doctor.findAll"); }
 
     /**
      * Update data for the given doctor.

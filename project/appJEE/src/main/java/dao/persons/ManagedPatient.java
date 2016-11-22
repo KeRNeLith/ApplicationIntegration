@@ -39,7 +39,7 @@ public class ManagedPatient extends DAOManager
      * @param id Database patient id.
      * @return Patient entity.
      */
-    public Patient readPatient(int id)
+    public Patient readPatient(long id)
     {
         return readEntity(id, Patient.class);
     }

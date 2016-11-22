@@ -25,7 +25,7 @@ public abstract class DAOManager
      * @param classType Class type of the entity.
      * @return The required entity.
      */
-    protected <T> T readEntity(int id, Class<T> classType)
+    protected <T> T readEntity(Long id, Class<T> classType)
     {
         T entity = null;
         try
@@ -43,11 +43,12 @@ public abstract class DAOManager
     /**
      * Get the list of every entity of a type from persistence context.
      * @param classType Class type of the entity.
+     * @param q Query specific to the entity to get every entity.
      * @return List of required entities.
      */
-    protected <T> List<T> getList(Class<T> classType)
+    protected <T> List<T> getList(Class<T> classType, String q)
     {
-        Query query = m_manager.createNamedQuery("Doctor.findAll");
+        Query query = m_manager.createNamedQuery(q);
         return query.getResultList();
     }
 
