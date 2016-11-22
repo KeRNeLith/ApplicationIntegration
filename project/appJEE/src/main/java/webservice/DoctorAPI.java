@@ -10,8 +10,6 @@ import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +34,46 @@ public class DoctorAPI
      */
     private ManagedDoctor m_doctorManager;
 
+    /**
+     * Get the Doctor selected.
+     * @return a Doctor encoded in JSON.
+     */
+    @GET
+    @Path("{idDoctor}")
+    @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
+    public String getDoctor(@PathParam("idDoctor") long id)
+    {
+        String ret = "{}";
+        Doctor doctor = null;
+
+        // Look if there is a doctor associated to the given ID
+        doctor = m_doctorManager.readDoctor(id);
+
+        // Create JSON response
+        if(doctor != null)
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            Writer writer = new StringWriter();
+
+            try
+            {
+                mapper.writeValue(writer, doctor);
+                writer.close();
+                ret = writer.toString();
+            }
+            catch(IOException e)
+            {
+                LOG.log(Level.SEVERE, "Unable to serialize a doctor.");
+                ret = "Unable to serialize a doctor.";
+            }
+        }
+        else
+        {
+            ret = "Unable to find the doctor.";
+        }
+
+        return ret;
+    }
 
     /**
      * Get the list of Doctor already created.
@@ -43,30 +81,44 @@ public class DoctorAPI
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public String list()
+    public String getAllDoctors()
     {
-        ObjectMapper mapper = new ObjectMapper();
-        Writer writer = new StringWriter();
+        String ret = "{}";
+        List<Doctor> doctorList = null;
 
         // Get List of Doctors
-        List<Doctor> doctorList = m_doctorManager.getList();
-
-        // Compute the JSON response including all Doctors.
         try
         {
-            for (Doctor d : doctorList)
-            {
-                mapper.writeValue(writer, d);
-            }
-            writer.close();
+            doctorList = m_doctorManager.getList();
         }
-        catch (IOException e)
-        {
-            LOG.log(Level.SEVERE, "Unable to seralize todo list");
-            return "{}";
+        catch(Exception e) {
+            e.printStackTrace();
+            ret = e.getMessage();
         }
 
-        return writer.toString();
+        // Create the JSON response including all Doctors.
+        if(doctorList != null)
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            Writer writer = new StringWriter();
+
+            try
+            {
+                for (Doctor d : doctorList)
+                {
+                    mapper.writeValue(writer, d);
+                }
+                writer.close();
+                ret = writer.toString();
+            }
+            catch (IOException e)
+            {
+                LOG.log(Level.SEVERE, "Unable to serialize doctor list.");
+                ret = "Unable to serialize doctor list.";
+            }
+        }
+
+        return ret;
     }
 
     /**
@@ -75,20 +127,17 @@ public class DoctorAPI
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public String create(Doctor doctor)
+    public String createDoctor(Doctor doctor)
     {
         String ret;
 
-        try
-        {
-            m_doctorManager.createDoctor(doctor);
-            ret = "Docteur " + doctor.getFirstname() + " "
-                + doctor.getLastname() + " créé.";
+        if(m_doctorManager.createDoctor(doctor) != null) {
+            ret = "Doctor " + doctor.getFirstname() + " "
+                    + doctor.getLastname() + " created.";
         }
-        catch (Exception e)
+        else
         {
-            e.printStackTrace();
-            ret = e.getMessage();
+            ret = "Error while creating a doctor !";
         }
 
         return ret;
@@ -100,22 +149,60 @@ public class DoctorAPI
      */
     @Path("{id}")
     @DELETE
-    public String delete(@PathParam("id") Integer id)
+    public String deleteDoctor(@PathParam("id") long id)
     {
-        String ret;
+        m_doctorManager.deleteDoctor(id);
 
-        try
+        return "Doctor deleted.";
+    }
+
+    /**
+     * Route to update a doctor's name
+     * @param id ID of the doctor to update.
+     * @param newDoctor New firstname.
+     * @return Response indicating if the update have been done.
+     */
+    @Path("{id}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String updateDoctor(@PathParam("id") long id, Doctor newDoctor) {
+        String ret = "";
+
+        // Get the doctor to update
+        Doctor doctor = m_doctorManager.readDoctor(id);
+
+        // Retrieves names
+        String firstname = newDoctor.getFirstname();
+        String lastname = newDoctor.getLastname();
+
+        if(doctor != null)
         {
-            m_doctorManager.deleteDoctor(id);
-            ret = "Docteur effacé.";
+            if(firstname != null)
+            {
+                doctor.setFirstname(firstname);
+            }
+            if(lastname != null)
+            {
+                doctor.setLastname(lastname);
+            }
+
+            // Do the update
+            try
+            {
+                m_doctorManager.updateDoctor(doctor);
+                ret = "Doctor updated !";
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                ret = e.getMessage();
+            }
         }
-        catch(Exception e)
+        else
         {
-            e.printStackTrace();
-            ret = e.getMessage();
+            ret = "No doctor found !";
         }
 
         return ret;
     }
-
 }

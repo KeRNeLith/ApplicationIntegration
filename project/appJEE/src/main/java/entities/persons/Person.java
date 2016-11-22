@@ -38,8 +38,8 @@ public abstract class Person
      */
     public Person()
     {
-        this.setFirstname("Default");
-        this.setLastname("Default");
+        this.setFirstname(null);
+        this.setLastname(null);
     }
 
     /**

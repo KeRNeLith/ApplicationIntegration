@@ -25,7 +25,7 @@ public abstract class DAOManager
      * @param classType Class type of the entity.
      * @return The required entity.
      */
-    protected <T> T readEntity(Long id, Class<T> classType)
+    protected <T> T readEntity(long id, Class<T> classType)
     {
         T entity = null;
         try
@@ -78,7 +78,7 @@ public abstract class DAOManager
      * @param id Entity id.
      * @param classType Class type of the entity.
      */
-    protected  <T> void deleteEntity(int id, Class<T> classType)
+    protected  <T> void deleteEntity(long id, Class<T> classType)
     {
         try
         {

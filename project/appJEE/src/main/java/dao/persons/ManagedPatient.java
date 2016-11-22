@@ -58,7 +58,7 @@ public class ManagedPatient extends DAOManager
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
      */
-    public void deletePatient(int id)
+    public void deletePatient(long id)
     {
         deleteEntity(id, Patient.class);
     }
