@@ -49,7 +49,7 @@ public class DoctorAPI
         Writer writer = new StringWriter();
 
         // Get List of Doctors
-        List<Doctor> doctorList = m_doctorManager.getList();
+        List<Doctor> doctorList = m_doctorManager.readAllDoctors();
 
         // Compute the JSON response including all Doctors.
         try

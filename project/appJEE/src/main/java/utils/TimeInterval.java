@@ -1,7 +1,5 @@
 package utils;
 
-import entities.timeslots.TimeSlot;
-
 import java.util.Date;
 
 /**

@@ -12,11 +12,11 @@ import java.util.List;
  * Created by kernelith on 13/11/16.
  */
 @NamedQueries(
-        {
-                @NamedQuery(
-                        name="Doctor.findAll",
-                        query="select doctor from Doctor doctor")
-        })
+{
+    @NamedQuery(
+            name="Doctor.findAll",
+            query="select doctor from Doctor doctor")
+})
 @Entity
 @DiscriminatorValue("Doctor")
 @XmlRootElement

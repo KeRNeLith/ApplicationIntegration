@@ -66,7 +66,11 @@ public class ManagedDoctor extends DAOManager
         return readEntity(id, Doctor.class);
     }
 
-    public List<Doctor> getList() { return getList(Doctor.class, "Doctor.findAll"); }
+    /**
+     * Get the list of all doctors.
+     * @return List of doctors.
+     */
+    public List<Doctor> readAllDoctors() { return getList("Doctor.findAll"); }
 
     /**
      * Update data for the given doctor.

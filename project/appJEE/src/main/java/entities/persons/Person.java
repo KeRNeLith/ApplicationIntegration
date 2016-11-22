@@ -19,7 +19,7 @@ public abstract class Person
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "personId")
-    private long m_id;
+    private Long m_id;
 
     /**
      * Person's first name.
@@ -56,7 +56,7 @@ public abstract class Person
      * Get the person database id.
      * @return Database id.
      */
-    public long getId()
+    public Long getId()
     {
         return m_id;
     }
