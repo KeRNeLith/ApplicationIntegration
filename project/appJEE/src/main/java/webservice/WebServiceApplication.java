@@ -23,8 +23,12 @@ public class WebServiceApplication extends Application
         Set<Class<?>> service = new HashSet<>();
 
         // Add N web services classes
+        // Test API
         service.add(HelloWorld.class);
+
+        // Doctor APIs
         service.add(DoctorAPI.class);
+        service.add(DoctorsAPI.class);
 
         return service;
     }

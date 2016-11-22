@@ -15,16 +15,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class that handle Doctor list web service routes.
+ * Class that handle Doctor web service routes.
  * Provide routes GET, POST, PUT and DELETE.
  * Created by ace_nanter on 20/11/16.
  */
-
-@Path("Doctor")
+@Path("doctor")
 public class DoctorAPI
 {
     /**
-     * Logger for todo list web service.
+     * Logger for doctor web service.
      */
     private static final Logger LOG = Logger.getLogger(DoctorAPI.class.getCanonicalName());
 
@@ -39,15 +38,14 @@ public class DoctorAPI
      * @return a Doctor encoded in JSON.
      */
     @GET
-    @Path("{idDoctor}")
+    @Path("{doctorId}")
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public String getDoctor(@PathParam("idDoctor") long id)
+    public String getDoctor(@PathParam("doctorId") long id)
     {
-        String ret = "{}";
-        Doctor doctor = null;
+        String ret;
 
         // Look if there is a doctor associated to the given ID
-        doctor = m_doctorManager.readDoctor(id);
+        Doctor doctor = m_doctorManager.readDoctor(id);
 
         // Create JSON response
         if(doctor != null)
@@ -64,58 +62,12 @@ public class DoctorAPI
             catch(IOException e)
             {
                 LOG.log(Level.SEVERE, "Unable to serialize a doctor.");
-                ret = "Unable to serialize a doctor.";
+                ret = "{\n\t\"error\": \"Unable to serialize a doctor.\"\n}";
             }
         }
         else
         {
-            ret = "Unable to find the doctor.";
-        }
-
-        return ret;
-    }
-
-    /**
-     * Get the list of Doctor already created.
-     * @return List of Doctor as JSON.
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public String getAllDoctors()
-    {
-        String ret = "{}";
-        List<Doctor> doctorList = null;
-
-        // Get List of Doctors
-        try
-        {
-            doctorList = m_doctorManager.getList();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            ret = e.getMessage();
-        }
-
-        // Create the JSON response including all Doctors.
-        if(doctorList != null)
-        {
-            ObjectMapper mapper = new ObjectMapper();
-            Writer writer = new StringWriter();
-
-            try
-            {
-                for (Doctor d : doctorList)
-                {
-                    mapper.writeValue(writer, d);
-                }
-                writer.close();
-                ret = writer.toString();
-            }
-            catch (IOException e)
-            {
-                LOG.log(Level.SEVERE, "Unable to serialize doctor list.");
-                ret = "Unable to serialize doctor list.";
-            }
+            ret = "{\n\t\"error\": \"Unable to find the doctor.\"\n}";
         }
 
         return ret;
@@ -132,12 +84,12 @@ public class DoctorAPI
         String ret;
 
         if(m_doctorManager.createDoctor(doctor) != null) {
-            ret = "Doctor " + doctor.getFirstname() + " "
-                    + doctor.getLastname() + " created.";
+            ret = "{\n\t\"success\": \"Doctor "     + doctor.getFirstname() + " "
+                                                    + doctor.getLastname() + " created.\"\n}";
         }
         else
         {
-            ret = "Error while creating a doctor !";
+            ret = "{\n\t\"error\": \"Error while creating a doctor.\"\n}";
         }
 
         return ret;
@@ -147,13 +99,13 @@ public class DoctorAPI
      * Route to delete the doctor corresponding to the given id.
      * @param id Id of the doctor to delete.
      */
-    @Path("{id}")
+    @Path("{doctorId}")
     @DELETE
-    public String deleteDoctor(@PathParam("id") long id)
+    public String deleteDoctor(@PathParam("doctorId") long id)
     {
         m_doctorManager.deleteDoctor(id);
 
-        return "Doctor deleted.";
+        return "{\n\t\"success\": \"Doctor deleted.\"\n}";
     }
 
     /**
@@ -162,45 +114,48 @@ public class DoctorAPI
      * @param newDoctor New firstname.
      * @return Response indicating if the update have been done.
      */
-    @Path("{id}")
+    @Path("{doctorId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public String updateDoctor(@PathParam("id") long id, Doctor newDoctor) {
-        String ret = "";
+    public String updateDoctor(@PathParam("doctorId") long id, Doctor newDoctor)
+    {
+        String ret;
 
         // Get the doctor to update
         Doctor doctor = m_doctorManager.readDoctor(id);
 
-        // Retrieves names
-        String firstname = newDoctor.getFirstname();
-        String lastname = newDoctor.getLastname();
-
-        if(doctor != null)
+        if (doctor != null)
         {
-            if(firstname != null)
+            // Retrieves names
+            String firstName = newDoctor.getFirstname();
+            String lastName = newDoctor.getLastname();
+
+            // Update fields
+            if (firstName != null)
             {
-                doctor.setFirstname(firstname);
+                doctor.setFirstname(firstName);
             }
-            if(lastname != null)
+
+            if (lastName != null)
             {
-                doctor.setLastname(lastname);
+                doctor.setLastname(lastName);
             }
 
             // Do the update
             try
             {
                 m_doctorManager.updateDoctor(doctor);
-                ret = "Doctor updated !";
+                ret = "{\n\t\"success\": \"Doctor updated.\"\n}";
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                ret = e.getMessage();
+                ret = "{\n\t\"error\": \"" + e.getMessage() + "\"\n}";
             }
         }
         else
         {
-            ret = "No doctor found !";
+            ret = "{\n\t\"error\": \"No doctor found.\"\n}";
         }
 
         return ret;
