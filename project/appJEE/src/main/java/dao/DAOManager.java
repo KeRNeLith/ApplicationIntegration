@@ -41,14 +41,14 @@ public abstract class DAOManager
     }
 
     /**
-     * Get the list of every entity of a type from persistence context.
-     * @param classType Class type of the entity.
-     * @param q Query specific to the entity to get every entity.
+     * Get the list of every entity matching the specified query name.
+     * @param queryName Query specific to the entity to get every entity.
      * @return List of required entities.
      */
-    protected <T> List<T> getList(Class<T> classType, String q)
+    protected <T> List<T> getList(String queryName)
     {
-        Query query = m_manager.createNamedQuery(q);
+        Query query = m_manager.createNamedQuery(queryName);
+
         return query.getResultList();
     }
 
