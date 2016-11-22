@@ -1,22 +1,48 @@
-package utils;
+package entities.timeslots;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Utility class that store an interval of time.
  * Created by kernelith on 19/11/16.
  */
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(name = "entityType")
+@DiscriminatorValue("TimeInterval")
+@Table(name = "TimeInterval")
 public class TimeInterval
 {
     /**
+     * Database id.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "timeIntervalId")
+    private Long m_id;
+
+    /**
      * Interval's beginning date.
      */
-    private Date m_begin;
+    @Column(name = "begin")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date m_begin;
 
     /**
      * Interval's ending date.
      */
-    private Date m_end;
+    @Column(name = "end")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date m_end;
+
+    /**
+     * Default Constructor.
+     */
+    public TimeInterval()
+    {
+        this(new Date(), new Date());
+    }
 
     /**
      * Constructor.
@@ -30,6 +56,14 @@ public class TimeInterval
     }
 
     // Accessors // Setters
+    /**
+     * Get the time slot database id.
+     * @return Database id.
+     */
+    public Long getId()
+    {
+        return m_id;
+    }
 
     /**
      * Get the beginning date.

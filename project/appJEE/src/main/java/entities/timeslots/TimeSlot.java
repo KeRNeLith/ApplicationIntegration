@@ -1,7 +1,6 @@
 package entities.timeslots;
 
 import entities.persons.Doctor;
-import utils.TimeInterval;
 
 import javax.persistence.*;
 import java.util.*;
@@ -13,35 +12,13 @@ import java.util.*;
 @NamedQueries(
 {
     @NamedQuery(
-                name="TimeSlot.findAll",
-                query="select timeslot from TimeSlot timeslot")
+                name="TimeSlot.findAllFollowing",
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_begin >= ?1")
 })
 @Entity
 @Table(name = "TimeSlot")
-public class TimeSlot
+public class TimeSlot extends TimeInterval
 {
-    /**
-     * Database id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "timeSlotId")
-    private Long m_id;
-
-    /**
-     * Beginning date of the time slot.
-     */
-    @Column(name = "begin")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date m_begin;
-
-    /**
-     * Ending date of the time slot.
-     */
-    @Column(name = "end")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date m_end;
-
     /**
      * List of appointments included in the time slot.
      */
@@ -54,6 +31,12 @@ public class TimeSlot
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor m_doctor;
+
+    /**
+     * List of remaining available slots.
+     */
+    @Transient
+    private List<TimeInterval> m_freeSlots;
 
     /**
      * Default constructor.
@@ -71,10 +54,10 @@ public class TimeSlot
      */
     public TimeSlot(Date begin, Date end, Doctor doctor)
     {
-        setBegin(begin);
-        setEnd(end);
+        super(begin, end);
         this.m_appointments = new ArrayList<>();
         setDoctor(doctor);
+        this.m_freeSlots = null;
     }
 
     // Member functions
@@ -100,20 +83,28 @@ public class TimeSlot
      */
     public List<TimeInterval> getAvailableSlots()
     {
+        if (m_freeSlots == null)
+        {
+            computeFreeSlots();
+        }
+
+        return m_freeSlots;
+    }
+
+    private void computeFreeSlots()
+    {
         // Sort appointment ordered by beginning date
-        Collections.sort(m_appointments, (app1, app2) -> app1.getDate().compareTo(app2.getDate()));
+        Collections.sort(m_appointments, (app1, app2) -> app1.getBegin().compareTo(app2.getBegin()));
 
         // Initial free slot (= entire time slot [m_begin, m_end])
-        List<TimeInterval> freeSlots = new ArrayList<>();
-        freeSlots.add(new TimeInterval(m_begin, m_end));
+        m_freeSlots = new ArrayList<>();
+        m_freeSlots.add(new TimeInterval(m_begin, m_end));
 
         // Loop on all busy time slots
         for (Appointment app : m_appointments)
         {
-            freeSlots = occupSlot(freeSlots, app);
+            m_freeSlots = occupSlot(m_freeSlots, app);
         }
-
-        return freeSlots;
     }
 
     /**
@@ -122,18 +113,13 @@ public class TimeSlot
      * @param appointment Appointment to add.
      * @return New list of free slots after adding the appointment.
      */
-    public List<TimeInterval> occupSlot(List<TimeInterval> freeSlots, Appointment appointment)
+    private List<TimeInterval> occupSlot(List<TimeInterval> freeSlots, Appointment appointment)
     {
         List<TimeInterval> result = new ArrayList<>();
 
-        // Appointment begin date
-        Date appointmentBegin = appointment.getDate();
-
-        // Appointment ending date
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(appointmentBegin);
-        cal.add(Calendar.MINUTE, appointment.getDuration());
-        Date appointmentEnd = cal.getTime();
+        // Appointment begin and end date
+        Date appointmentBegin = appointment.getBegin();
+        Date appointmentEnd = appointment.getEnd();
 
         // For each free slot
         for (TimeInterval freeSlot : freeSlots)
@@ -183,51 +169,6 @@ public class TimeSlot
     }
 
     // Accessors // Setters
-    /**
-     * Get the time slot database id.
-     * @return Database id.
-     */
-    public Long getId()
-    {
-        return m_id;
-    }
-
-    /**
-     * Get the beginning date of the time slot.
-     * @return Beginning date of the time slot.
-     */
-    public Date getBegin()
-    {
-        return m_begin;
-    }
-
-    /**
-     * Set the beginning date.
-     * @param begin New beginning date.
-     */
-    public void setBegin(Date begin)
-    {
-        this.m_begin = begin;
-    }
-
-    /**
-     * Get the ending date of the time slot.
-     * @return Ending date of the time slot.
-     */
-    public Date getEnd()
-    {
-        return m_end;
-    }
-
-    /**
-     * Set the ending date.
-     * @param end New ending date.
-     */
-    public void setEnd(Date end)
-    {
-        this.m_end = end;
-    }
-
     /**
      * Get the list of appointments included in the time slot.
      * @return List of appointments included in the time slot.

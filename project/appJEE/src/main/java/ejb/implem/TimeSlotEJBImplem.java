@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,8 @@ public class TimeSlotEJBImplem implements TimeSlotEJB
     @Override
     public List<TimeSlot> getAvailableTimeSlots()
     {
-        Query query = m_manager.createNamedQuery("TimeSlot.findAll");
+        Query query = m_manager.createNamedQuery("TimeSlot.findAllFollowing");
+        query.setParameter(1, new Date(), TemporalType.TIMESTAMP);
 
         // List of time slots
         List<TimeSlot> timeSlots = query.getResultList();
