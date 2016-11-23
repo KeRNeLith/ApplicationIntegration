@@ -24,9 +24,9 @@ public interface AppointmentEJB
 
     /**
      * Remove the specified appointment.
-     * @param app Appointment to cancel.
+     * @param id Id of the appointment to cancel.
      */
-    void cancelAppointment(Appointment app);
+    void cancelAppointment(long id);
 
     /**
      * Modify the specified appointment.

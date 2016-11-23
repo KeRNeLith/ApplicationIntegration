@@ -49,9 +49,20 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
     }
 
     @Override
-    public void cancelAppointment(Appointment app)
+    public void cancelAppointment(long id)
     {
-        deleteEntity(app.getId(), Appointment.class);
+        Appointment app = readEntity(id, Appointment.class);
+
+        if (app != null)
+        {
+            TimeSlot containingTimeSlot = app.getTimeSlot();
+
+            // Update time slot => remove appointment
+            containingTimeSlot.removeAppointment(id);
+            m_timeSlotEJB.updateTimeSlot(containingTimeSlot);
+
+            deleteEntity(id, Appointment.class);
+        }
     }
 
     @Override

@@ -202,6 +202,15 @@ public class TimeSlot extends TimeInterval
         return app;
     }
 
+    /**
+     * Remove the appointment matching the given id.
+     * @param id Appointment id.
+     */
+    public void removeAppointment(long id)
+    {
+        m_appointments.removeIf(a -> a.getId() == id);
+    }
+
     // Accessors // Setters
     /**
      * Get the list of appointments included in the time slot.
