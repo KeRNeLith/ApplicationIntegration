@@ -1,59 +1,63 @@
 package ejb.implem;
 
+import ejb.dao.DAOManager;
 import ejb.face.AppointmentEJB;
+import ejb.face.TimeSlotEJB;
+import entities.persons.Doctor;
+import entities.persons.Patient;
 import entities.timeslots.Appointment;
+import entities.timeslots.TimeSlot;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 
 /**
  * Implementation for appointments EJB.
  * Created by ace_nanter on 20/11/16.
  */
-public class AppointmentEJBImplem  implements AppointmentEJB
+@Stateless
+public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
 {
     /**
-     * Entity manager (injected).
+     * Time Slot EJB (injected).
      */
-    @PersistenceContext
-    protected EntityManager m_manager;
-
+    @EJB
+    private TimeSlotEJB m_timeSlotEJB;
 
     @Override
-    public Appointment createAppointment()
+    public Appointment createAppointment(Date begin, Date end, TimeSlot timeSlot, Patient patient)
     {
-        Appointment appointment = null;
+        Appointment appointment = timeSlot.addAppointment(begin, end, patient);
 
-        try
+        if (appointment != null)
         {
-            appointment = new Appointment();
-            m_manager.persist(appointment);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+            try
+            {
+                m_manager.persist(appointment);
+                m_timeSlotEJB.updateTimeSlot(timeSlot); // Update time slot with the appointment
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
-        return(appointment);
+        return (appointment);
     }
 
     @Override
-    public boolean cancelAppointment(Appointment app) {
-        Appointment appointment = null;
-        try
-        {
-            appointment = m_manager.find(Appointment.class, app.getId());
-            m_manager.remove(appointment);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return false;
+    public void cancelAppointment(Appointment app)
+    {
+        deleteEntity(app.getId(), Appointment.class);
     }
 
     @Override
-    public boolean modifyAppointment(Appointment app) {
+    public boolean modifyAppointment(Appointment app)
+    {
+        // TODO
         return false;
     }
 }

@@ -1,6 +1,6 @@
 package webservice;
 
-import dao.persons.ManagedDoctor;
+import ejb.dao.persons.ManagedDoctor;
 import entities.persons.Doctor;
 import org.codehaus.jackson.map.ObjectMapper;
 

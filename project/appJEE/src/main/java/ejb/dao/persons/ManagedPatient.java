@@ -1,6 +1,6 @@
-package dao.persons;
+package ejb.dao.persons;
 
-import dao.DAOManager;
+import ejb.dao.DAOManager;
 import entities.persons.Patient;
 
 import javax.ejb.Stateless;

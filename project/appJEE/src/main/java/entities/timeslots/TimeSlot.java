@@ -1,9 +1,11 @@
 package entities.timeslots;
 
 import entities.persons.Doctor;
+import entities.persons.Patient;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class that represent a time slot.
@@ -13,7 +15,7 @@ import java.util.*;
 {
     @NamedQuery(
                 name="TimeSlot.findAllFollowing",
-                query="SELECT ts FROM TimeSlot ts WHERE ts.m_begin >= ?1")
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_end >= ?1")
 })
 @Entity
 @Table(name = "TimeSlot")
@@ -91,6 +93,9 @@ public class TimeSlot extends TimeInterval
         return m_freeSlots;
     }
 
+    /**
+     * Compute all free slots remaining in the time slot.
+     */
     private void computeFreeSlots()
     {
         // Sort appointment ordered by beginning date
@@ -143,7 +148,7 @@ public class TimeSlot extends TimeInterval
                 }
             }
             // If appointment date is strictly before the free slot beginning (<)
-            else if (appointmentBegin.before(freeSlot.getBegin()))
+            else if (appointmentBegin.before(freeSlot.getEnd()))
             {
                 // If appointment ends before free slot end
                 if (appointmentEnd.before(freeSlot.getEnd()))
@@ -166,6 +171,35 @@ public class TimeSlot extends TimeInterval
         }
 
         return result;
+    }
+
+    /**
+     * Add if possible the appointment to the current time slot.
+     * @param begin Beginning date of the appointment.
+     * @param end Ending date of the appointment.
+     * @param patient Patient concerned.
+     * @return Appointment instance created if possible otherwise null.
+     */
+    public Appointment addAppointment(Date begin, Date end, Patient patient)
+    {
+        Appointment app = null;
+
+        // Check if the given time slot can receive the appointment
+        Optional<TimeInterval> availableSlot = getAvailableSlots()  .stream()
+                                                                    .filter(tm -> !begin.before(tm.getBegin())
+                                                                                && end.before(tm.getEnd()))
+                                                                    .findFirst();
+
+        // At least one time interval available
+        if (availableSlot.isPresent())
+        {
+            app = new Appointment(begin, end, this, patient);
+            m_appointments.add(app);
+
+            m_freeSlots = null; // For lazy computing => will compute free slots only on next getAvailableSlots call
+        }
+
+        return app;
     }
 
     // Accessors // Setters

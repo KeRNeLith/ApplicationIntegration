@@ -1,6 +1,8 @@
 package ejb.implem;
 
+import ejb.dao.DAOManager;
 import ejb.face.TimeSlotEJB;
+import entities.persons.Doctor;
 import entities.timeslots.TimeSlot;
 
 import javax.ejb.Stateless;
@@ -18,13 +20,43 @@ import java.util.stream.Collectors;
  * Created by kernelith on 18/11/16.
  */
 @Stateless
-public class TimeSlotEJBImplem implements TimeSlotEJB
+public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
 {
-    /**
-     * Entity manager (injected).
-     */
-    @PersistenceContext
-    protected EntityManager m_manager;
+    @Override
+    public TimeSlot createTimeSlot(Date begin, Date end, Doctor doctor)
+    {
+        TimeSlot timeSlot = null;
+
+        try
+        {
+            timeSlot = new TimeSlot(begin, end, doctor);       // In Memory
+            m_manager.persist(timeSlot);      // Managed
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return (timeSlot);
+    }
+
+    @Override
+    public TimeSlot readTimeSlot(long id)
+    {
+        return readEntity(id, TimeSlot.class);
+    }
+
+    @Override
+    public TimeSlot updateTimeSlot(TimeSlot timeSlot)
+    {
+        return updateEntity(timeSlot);
+    }
+
+    @Override
+    public void deleteTimeSlot(long id)
+    {
+        deleteEntity(id, TimeSlot.class);
+    }
 
     @Override
     public List<TimeSlot> getAvailableTimeSlots()

@@ -1,6 +1,6 @@
 package webservice;
 
-import dao.persons.ManagedDoctor;
+import ejb.dao.persons.ManagedDoctor;
 import entities.persons.Doctor;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -10,7 +10,6 @@ import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
