@@ -2,8 +2,14 @@ package entities.timeslots;
 
 import entities.persons.Doctor;
 import entities.persons.Patient;
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,6 +76,7 @@ public class TimeSlot extends TimeInterval
      * Check if the time slot is full.
      * @return True if there is no available slot.
      */
+    @JsonIgnore
     public boolean isFull()
     {
         boolean ret = false;
@@ -238,6 +245,7 @@ public class TimeSlot extends TimeInterval
      * Get the doctor providing the time slot.
      * @return Doctor providing the time slot.
      */
+    @JsonIgnore
     public Doctor getDoctor()
     {
         return m_doctor;

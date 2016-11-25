@@ -3,6 +3,10 @@ package entities.timeslots;
 import entities.persons.Patient;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 /**
@@ -17,6 +21,9 @@ import java.util.Date;
 })
 @Entity
 @Table(name = "Appointment")
+
+@XmlRootElement(name="appointment")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Appointment extends TimeInterval
 {
     /**
@@ -24,6 +31,7 @@ public class Appointment extends TimeInterval
      */
     @ManyToOne
     @JoinColumn(name = "timeSlotId")
+    @XmlElement(required = true)
     private TimeSlot m_timeSlot;
 
     /**

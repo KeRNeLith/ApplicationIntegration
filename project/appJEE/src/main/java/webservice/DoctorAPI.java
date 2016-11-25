@@ -34,7 +34,7 @@ public class DoctorAPI
 
     /**
      * Get the Doctor selected.
-     * @return a Response containing a Doctor encoded in JSON.
+     * @return Response containing a Doctor encoded in JSON.
      */
     @GET
     @Path("{doctorId}")
@@ -60,7 +60,7 @@ public class DoctorAPI
             }
             catch(IOException e)
             {
-                LOG.log(Level.SEVERE, "Unable to serialize a doctor.");
+                LOG.log(Level.SEVERE, "Unable to serialize a doctor." + e.getMessage());
                 response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
                                 .entity("{\n\t\"error\": \"Unable to serialize a doctor.\"\n}").build();
             }
@@ -77,7 +77,7 @@ public class DoctorAPI
     /**
      * Route to create a new doctor to be added in the list.
      * @param doctor Doctor to create. Sent using JSON.
-     * @return Resposne indicating if the doctor has been created.
+     * @return Response indicating if the doctor has been created.
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -103,7 +103,7 @@ public class DoctorAPI
     /**
      * Route to delete the doctor corresponding to the given id.
      * @param id Id of the doctor to delete.
-     * @Return Response indicating the delete have been done.
+     * @return Response indicating the delete have been done.
      */
     @Path("{doctorId}")
     @DELETE
@@ -129,7 +129,7 @@ public class DoctorAPI
     /**
      * Route to update a doctor's name
      * @param id ID of the doctor to update.
-     * @param newDoctor New firstname.
+     * @param newDoctor doctor containing update information.
      * @return Response indicating if the update have been done.
      */
     @Path("{doctorId}")

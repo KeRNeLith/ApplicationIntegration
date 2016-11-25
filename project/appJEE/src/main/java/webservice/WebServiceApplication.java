@@ -30,6 +30,9 @@ public class WebServiceApplication extends Application
         service.add(DoctorAPI.class);
         service.add(DoctorsAPI.class);
 
+        // TimeInterval APIs
+        service.add(TimeSlotAPI.class);
+
         return service;
     }
 }

@@ -82,7 +82,7 @@ public abstract class DAOManager
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
      * @param classType Class type of the entity.
-     * @return True if the operation success, otherwise false.
+     * @return True if the operation succeeded, otherwise false.
      */
     protected <T> boolean deleteEntity(long id, Class<T> classType)
     {

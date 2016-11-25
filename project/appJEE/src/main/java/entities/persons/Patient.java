@@ -3,6 +3,10 @@ package entities.persons;
 import entities.timeslots.Appointment;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +17,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("Patient")
 @Table(name = "Patient")
+@XmlRootElement
 public class Patient extends Person
 {
     /**

@@ -68,7 +68,7 @@ public class ManagedPatient extends DAOManager
     /**
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
-     * @return True if the operation success otherwise false.
+     * @return True if the operation succeeded otherwise false.
      */
     public boolean deletePatient(long id)
     {

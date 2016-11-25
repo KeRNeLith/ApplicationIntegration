@@ -45,8 +45,9 @@ public interface TimeSlotEJB
     /**
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
+     * @return True if the operation succeeded, otherwise false.
      */
-    void deleteTimeSlot(long id);
+    boolean deleteTimeSlot(long id);
 
     /**
      * Get the list of all available time slots.

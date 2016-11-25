@@ -69,8 +69,10 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     }
 
     @Override
-    public void deleteTimeSlot(long id)
+    public boolean deleteTimeSlot(long id)
     {
+        boolean ret = false;
+
         // Delete all appointment from the time slot => they are cancelled
         TimeSlot timeSlot = readTimeSlot(id);
         if (timeSlot != null)
@@ -81,7 +83,10 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
             }
 
             deleteEntity(id, TimeSlot.class);
+            ret = true;
         }
+
+        return ret;
     }
 
     @Override
