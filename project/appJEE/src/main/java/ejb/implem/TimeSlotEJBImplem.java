@@ -1,10 +1,14 @@
 package ejb.implem;
 
 import ejb.dao.DAOManager;
+import ejb.face.AppointmentEJB;
 import ejb.face.TimeSlotEJB;
 import entities.persons.Doctor;
+import entities.timeslots.Appointment;
 import entities.timeslots.TimeSlot;
+import sun.security.krb5.internal.APOptions;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +26,12 @@ import java.util.stream.Collectors;
 @Stateless
 public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
 {
+    /**
+     * Appointment EJB (injected).
+     */
+    @EJB
+    private AppointmentEJB m_appointmentEJB;
+
     @Override
     public TimeSlot createTimeSlot(Date begin, Date end, Doctor doctor)
     {
@@ -61,7 +71,17 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     @Override
     public void deleteTimeSlot(long id)
     {
-        deleteEntity(id, TimeSlot.class);
+        // Delete all appointment from the time slot => they are cancelled
+        TimeSlot timeSlot = readTimeSlot(id);
+        if (timeSlot != null)
+        {
+            for (Appointment appointment : timeSlot.getAppointments())
+            {
+                m_appointmentEJB.cancelAppointment(appointment.getId());
+            }
+
+            deleteEntity(id, TimeSlot.class);
+        }
     }
 
     @Override

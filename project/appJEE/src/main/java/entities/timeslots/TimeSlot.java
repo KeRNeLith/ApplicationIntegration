@@ -27,7 +27,7 @@ public class TimeSlot extends TimeInterval
     /**
      * List of appointments included in the time slot.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "m_timeSlot")
     private List<Appointment> m_appointments;
 
     /**
@@ -111,7 +111,12 @@ public class TimeSlot extends TimeInterval
         // Loop on all busy time slots
         for (Appointment app : m_appointments)
         {
-            m_freeSlots = occupSlot(m_freeSlots, app);
+            // Appointment is not considered when the patient is not affected
+            // But this is to keep a trace of appointments even if the patient has been deleted.
+            if (app.getPatient() != null)
+            {
+                m_freeSlots = occupSlot(m_freeSlots, app);
+            }
         }
     }
 
@@ -211,7 +216,12 @@ public class TimeSlot extends TimeInterval
      */
     public void removeAppointment(long id)
     {
-        m_appointments.removeIf(a -> a.getId() == id);
+        boolean supp = m_appointments.removeIf(a -> a.getId() == id);
+
+        if (supp)
+        {
+            m_freeSlots = null; // For lazy computing => will compute free slots only on next getAvailableSlots call
+        }
     }
 
     // Accessors // Setters

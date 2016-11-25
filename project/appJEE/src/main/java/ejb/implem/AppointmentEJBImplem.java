@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation for appointments EJB.
@@ -46,6 +47,12 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
         }
 
         return (appointment);
+    }
+
+    @Override
+    public List<Appointment> readAllAppointmentsFromPatient(long id)
+    {
+        return getList("Appointment.findAllForPatient", id);
     }
 
     @Override

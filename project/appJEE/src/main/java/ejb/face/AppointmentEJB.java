@@ -5,6 +5,7 @@ import entities.timeslots.Appointment;
 import entities.timeslots.TimeSlot;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Interface for the EJB handling appointments.
@@ -21,6 +22,13 @@ public interface AppointmentEJB
      * @return An appointment instance if creation is possible otherwise null.
      */
     Appointment createAppointment(Date begin, Date end, TimeSlot timeSlot, Patient patient);
+
+    /**
+     * Get the list of all appointments associated to the given patient id.
+     * @param id Patient id.
+     * @return List of Appointments.
+     */
+    List<Appointment> readAllAppointmentsFromPatient(long id);
 
     /**
      * Remove the specified appointment.

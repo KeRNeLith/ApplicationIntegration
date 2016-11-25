@@ -79,11 +79,11 @@ public class ManagedDoctor extends DAOManager
     public void deleteDoctor(long id)
     {
         // Before deleting entity set time slots associated to the doctor to NULL (prevent constraint violation)
+        // Keep doctor's previous time slots for history
         List<TimeSlot> timeSlots = m_timeSlotEJB.readAllTimeSlotsFromDoctor(id);
         for (TimeSlot ts : timeSlots)
         {
             ts.setDoctor(null);
-            m_timeSlotEJB.updateTimeSlot(ts);
         }
 
         // Delete entity

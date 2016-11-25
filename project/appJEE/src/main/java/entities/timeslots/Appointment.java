@@ -9,6 +9,12 @@ import java.util.Date;
  * Class that represent an appointment.
  * Created by kernelith on 13/11/16.
  */
+@NamedQueries(
+{
+        @NamedQuery(
+                name="Appointment.findAllForPatient",
+                query="SELECT app FROM Appointment app WHERE app.m_patient.m_id = ?1")
+})
 @Entity
 @Table(name = "Appointment")
 public class Appointment extends TimeInterval

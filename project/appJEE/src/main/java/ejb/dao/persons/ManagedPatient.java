@@ -1,9 +1,13 @@
 package ejb.dao.persons;
 
 import ejb.dao.DAOManager;
+import ejb.face.AppointmentEJB;
 import entities.persons.Patient;
+import entities.timeslots.Appointment;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.List;
 
 /**
  * Class that provide implementation of CRUD for Patient entity.
@@ -12,6 +16,12 @@ import javax.ejb.Stateless;
 @Stateless
 public class ManagedPatient extends DAOManager
 {
+    /**
+     * Appointment EJB (injected).
+     */
+    @EJB
+    private AppointmentEJB m_appointmentEJB;
+
     /**
      * Create a new managed patient entity.
      * @param name Patient's name.
@@ -61,6 +71,14 @@ public class ManagedPatient extends DAOManager
      */
     public void deletePatient(long id)
     {
+        // Before deleting entity set all appointments associated to the patient to NULL
+        // Keep trace of previous appointments made
+        List<Appointment> appointments = m_appointmentEJB.readAllAppointmentsFromPatient(id);
+        for (Appointment app : appointments)
+        {
+            app.setPatient(null);
+        }
+
         deleteEntity(id, Patient.class);
     }
 }
