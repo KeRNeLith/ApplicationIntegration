@@ -14,17 +14,18 @@ public class ManagedPatient extends DAOManager
 {
     /**
      * Create a new managed patient entity.
+     * @param name Patient's name.
+     * @param surname Patient's surname.
      * @return Created entity.
      */
-    public Patient createPatient()
+    public Patient createPatient(String name, String surname)
     {
         Patient patient = null;
 
         try
         {
-            patient = new Patient(); // In Memory
-
-            m_manager.persist(patient);   // Managed
+            patient = new Patient(name, surname);   // In Memory
+            m_manager.persist(patient);             // Managed
         }
         catch (Exception e)
         {

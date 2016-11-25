@@ -29,6 +29,13 @@ public interface TimeSlotEJB
     TimeSlot readTimeSlot(long id);
 
     /**
+     * Get the list of all time slots associated to the given doctor id.
+     * @param id Doctor id.
+     * @return List of TimeSlot.
+     */
+    List<TimeSlot> readAllTimeSlotsFromDoctor(long id);
+
+    /**
      * Update data for the given time slot.
      * @param timeSlot TimeSlot entity.
      * @return Updated entity.

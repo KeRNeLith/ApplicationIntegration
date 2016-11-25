@@ -26,7 +26,17 @@ public class Patient extends Person
      */
     public Patient()
     {
-        super();
+        this(null, null);
+    }
+
+    /**
+     * Constructor.
+     * @param firstname Doctor's firstname.
+     * @param lastname Doctor's lastname.
+     */
+    public Patient(String firstname, String lastname)
+    {
+        super(firstname, lastname);
         this.m_appointments = new ArrayList<>();
     }
 

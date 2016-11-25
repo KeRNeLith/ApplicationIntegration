@@ -47,6 +47,12 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     }
 
     @Override
+    public List<TimeSlot> readAllTimeSlotsFromDoctor(long id)
+    {
+        return getList("TimeSlot.findAllForDoctor", id);
+    }
+
+    @Override
     public TimeSlot updateTimeSlot(TimeSlot timeSlot)
     {
         return updateEntity(timeSlot);

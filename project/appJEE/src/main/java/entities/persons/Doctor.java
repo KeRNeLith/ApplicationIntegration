@@ -34,18 +34,18 @@ public class Doctor extends Person
      */
     public Doctor()
     {
-        super();
-        this.m_timeSlots = new ArrayList<>();
+        this(null, null);
     }
 
     /**
-     * Copy constructor.
-     * @param doc Doctor to copy.
+     * Constructor.
+     * @param firstname Doctor's firstname.
+     * @param lastname Doctor's lastname.
      */
-    public Doctor(Doctor doc)
+    public Doctor(String firstname, String lastname)
     {
-        super(doc);
-        this.m_timeSlots = doc.getTimeSlots();
+        super(firstname, lastname);
+        this.m_timeSlots = new ArrayList<>();
     }
 
     /**

@@ -15,7 +15,10 @@ import java.util.stream.Collectors;
 {
     @NamedQuery(
                 name="TimeSlot.findAllFollowing",
-                query="SELECT ts FROM TimeSlot ts WHERE ts.m_end >= ?1")
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_end >= ?1 AND ts.m_doctor IS NOT NULL"),
+    @NamedQuery(
+                name="TimeSlot.findAllForDoctor",
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_doctor.m_id = ?1")
 })
 @Entity
 @Table(name = "TimeSlot")

@@ -38,18 +38,18 @@ public abstract class Person
      */
     public Person()
     {
-        this.setFirstname(null);
-        this.setLastname(null);
+        this(null, null);
     }
 
     /**
-     * Copy constructor.
-     * @param p Person to copy.
+     * Constructor.
+     * @param firstname Person's firstname.
+     * @param lastname Person's lastname.
      */
-    public Person(Person p)
+    public Person(String firstname, String lastname)
     {
-        this.setFirstname(p.getFirstname());
-        this.setLastname(p.getLastname());
+        this.setFirstname(firstname);
+        this.setLastname(lastname);
     }
 
     /**

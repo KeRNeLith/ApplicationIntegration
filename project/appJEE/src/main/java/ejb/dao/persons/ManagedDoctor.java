@@ -1,10 +1,14 @@
 package ejb.dao.persons;
 
 import ejb.dao.DAOManager;
+import ejb.face.TimeSlotEJB;
 import entities.persons.Doctor;
+import entities.timeslots.TimeSlot;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Class that provide implementation of CRUD for Doctor entity.
@@ -14,39 +18,25 @@ import java.util.List;
 public class ManagedDoctor extends DAOManager
 {
     /**
-     * Create a new managed doctor entity.
-     * @return Created entity.
+     * Time slot EJB (injected).
      */
-    public Doctor createDoctor()
-    {
-        Doctor doctor = null;
-
-        try
-        {
-            doctor = new Doctor();      // In Memory
-            m_manager.persist(doctor);  // Managed
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return (doctor);
-    }
+    @EJB
+    private TimeSlotEJB m_timeSlotEJB;
 
     /**
-     * Create a new managed doctor entity by copying.
-     * @param doc Doctor to copy.
+     * Create a new managed doctor entity.
+     * @param name Doctor's name.
+     * @param surname Doctor's surname.
      * @return Created entity.
      */
-    public Doctor createDoctor(Doctor doc)
+    public Doctor createDoctor(String name, String surname)
     {
         Doctor doctor = null;
 
         try
         {
-            doctor = new Doctor(doc);       // In Memory
-            m_manager.persist(doctor);      // Managed
+            doctor = new Doctor(name, surname); // In Memory
+            m_manager.persist(doctor);          // Managed
         }
         catch (Exception e)
         {
@@ -88,6 +78,15 @@ public class ManagedDoctor extends DAOManager
      */
     public void deleteDoctor(long id)
     {
+        // Before deleting entity set time slots associated to the doctor to NULL (prevent constraint violation)
+        List<TimeSlot> timeSlots = m_timeSlotEJB.readAllTimeSlotsFromDoctor(id);
+        for (TimeSlot ts : timeSlots)
+        {
+            ts.setDoctor(null);
+            m_timeSlotEJB.updateTimeSlot(ts);
+        }
+
+        // Delete entity
         deleteEntity(id, Doctor.class);
     }
 }

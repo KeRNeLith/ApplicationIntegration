@@ -82,7 +82,8 @@ public class DoctorAPI
     {
         String ret;
 
-        if(m_doctorManager.createDoctor(doctor) != null) {
+        if (m_doctorManager.createDoctor(doctor.getFirstname(), doctor.getLastname()) != null)
+        {
             ret = "{\n\t\"success\": \"Doctor "     + doctor.getFirstname() + " "
                                                     + doctor.getLastname() + " created.\"\n}";
         }

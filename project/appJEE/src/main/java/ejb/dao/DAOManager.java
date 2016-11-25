@@ -43,11 +43,16 @@ public abstract class DAOManager
     /**
      * Get the list of every entity matching the specified query name.
      * @param queryName Query specific to the entity to get every entity.
+     * @param args Query arguments.
      * @return List of required entities.
      */
-    protected <T> List<T> getList(String queryName)
+    protected <T> List<T> getList(String queryName, Object... args)
     {
         Query query = m_manager.createNamedQuery(queryName);
+        for (int i = 0 ; i < args.length ; ++i)
+        {
+            query.setParameter((i + 1), args[i]);
+        }
 
         return query.getResultList();
     }
