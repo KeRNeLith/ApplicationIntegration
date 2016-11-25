@@ -1,5 +1,8 @@
 package webservice;
 
+import webservice.persons.DoctorAPI;
+import webservice.persons.DoctorsAPI;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;

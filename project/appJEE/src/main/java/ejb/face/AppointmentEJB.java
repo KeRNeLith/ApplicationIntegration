@@ -33,13 +33,14 @@ public interface AppointmentEJB
     /**
      * Remove the specified appointment.
      * @param id Id of the appointment to cancel.
+     * @return True if the operation succeed, otherwise false.
      */
-    void cancelAppointment(long id);
+    boolean cancelAppointment(long id);
 
     /**
      * Modify the specified appointment.
      * @param app TODO
-     * @return TODO
+     * @return True if the operation succeed, otherwise false.
      */
     boolean modifyAppointment(Appointment app);
 }
