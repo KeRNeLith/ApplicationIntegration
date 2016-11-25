@@ -82,17 +82,26 @@ public abstract class DAOManager
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
      * @param classType Class type of the entity.
+     * @return True if the operation success, otherwise false.
      */
-    protected  <T> void deleteEntity(long id, Class<T> classType)
+    protected <T> boolean deleteEntity(long id, Class<T> classType)
     {
+        boolean ret = false;
+
         try
         {
             T entity = m_manager.find(classType, id);
-            m_manager.remove(entity);
+            if(entity != null) {
+                m_manager.remove(entity);
+                ret = true;
+            }
+
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+
+        return ret;
     }
 }

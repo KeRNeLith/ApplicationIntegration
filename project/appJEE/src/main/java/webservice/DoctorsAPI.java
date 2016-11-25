@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -36,13 +37,13 @@ public class DoctorsAPI
 
     /**
      * Get the list of Doctor already created.
-     * @return List of Doctor as JSON.
+     * @return A Response containing a list of Doctor as JSON.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public String getAllDoctors()
+    public Response getAllDoctors()
     {
-        String ret = "{}";
+        Response response = Response.ok("{ }", MediaType.APPLICATION_JSON).build();
         List<Doctor> doctorList = null;
 
         // Get List of Doctors
@@ -53,7 +54,8 @@ public class DoctorsAPI
         catch(Exception e)
         {
             e.printStackTrace();
-            ret = "{\n\t\"error\": \"" + e.getMessage() + "\"\n}";
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}").build();
         }
 
         // Create the JSON response including all Doctors.
@@ -67,15 +69,16 @@ public class DoctorsAPI
                 mapper.writeValue(writer, doctorList);
 
                 writer.close();
-                ret = writer.toString();
+                response = Response.ok(writer.toString(), MediaType.APPLICATION_JSON).build();
             }
             catch (IOException e)
             {
                 LOG.log(Level.SEVERE, "Unable to serialize doctor list.");
-                ret = "{\n\t\"error\": \"Unable to serialize doctor list.\"\n}";
+                response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
+                    .entity("{\n\t\"error\": \"Unable to serialize doctor list.\"\n}").build();
             }
         }
 
-        return ret;
+        return response;
     }
 }

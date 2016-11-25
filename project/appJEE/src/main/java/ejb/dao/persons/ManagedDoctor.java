@@ -75,8 +75,9 @@ public class ManagedDoctor extends DAOManager
     /**
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
+     * @return True if the operation success, otherwise false.
      */
-    public void deleteDoctor(long id)
+    public boolean deleteDoctor(long id)
     {
         // Before deleting entity set time slots associated to the doctor to NULL (prevent constraint violation)
         // Keep doctor's previous time slots for history
@@ -87,6 +88,6 @@ public class ManagedDoctor extends DAOManager
         }
 
         // Delete entity
-        deleteEntity(id, Doctor.class);
+        return deleteEntity(id, Doctor.class);
     }
 }

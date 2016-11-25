@@ -34,14 +34,14 @@ public class DoctorAPI
 
     /**
      * Get the Doctor selected.
-     * @return a Doctor encoded in JSON.
+     * @return a Response containing a Doctor encoded in JSON.
      */
     @GET
     @Path("{doctorId}")
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public String getDoctor(@PathParam("doctorId") long id)
+    public Response getDoctor(@PathParam("doctorId") long id)
     {
-        String ret;
+        Response response;
 
         // Look if there is a doctor associated to the given ID
         Doctor doctor = m_doctorManager.readDoctor(id);
@@ -56,56 +56,74 @@ public class DoctorAPI
             {
                 mapper.writeValue(writer, doctor);
                 writer.close();
-                ret = writer.toString();
+                response = Response.ok(writer.toString(), MediaType.APPLICATION_JSON).build();
             }
             catch(IOException e)
             {
                 LOG.log(Level.SEVERE, "Unable to serialize a doctor.");
-                ret = "{\n\t\"error\": \"Unable to serialize a doctor.\"\n}";
+                response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
+                                .entity("{\n\t\"error\": \"Unable to serialize a doctor.\"\n}").build();
             }
         }
         else
         {
-            ret = "{\n\t\"error\": \"Unable to find the doctor.\"\n}";
+            response = Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\n\t\"error\": \"Unable to find the doctor.\"\n}").build();
         }
 
-        return ret;
+        return response;
     }
 
     /**
      * Route to create a new doctor to be added in the list.
      * @param doctor Doctor to create. Sent using JSON.
+     * @return Resposne indicating if the doctor has been created.
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public String createDoctor(Doctor doctor)
+    public Response createDoctor(Doctor doctor)
     {
-        String ret;
+        Response response;
 
         if (m_doctorManager.createDoctor(doctor.getFirstname(), doctor.getLastname()) != null)
         {
-            ret = "{\n\t\"success\": \"Doctor "     + doctor.getFirstname() + " "
-                                                    + doctor.getLastname() + " created.\"\n}";
+            response = Response.ok("{\n\t\"success\": \"Doctor " + doctor.getFirstname() + " "
+                            + doctor.getLastname() + " created.\"\n}",
+                            MediaType.APPLICATION_JSON).build();
         }
         else
         {
-            ret = "{\n\t\"error\": \"Error while creating a doctor.\"\n}";
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\n\t\"error\": \"Error while creating a doctor.\"\n}").build();
         }
 
-        return ret;
+        return response;
     }
 
     /**
      * Route to delete the doctor corresponding to the given id.
      * @param id Id of the doctor to delete.
+     * @Return Response indicating the delete have been done.
      */
     @Path("{doctorId}")
     @DELETE
-    public String deleteDoctor(@PathParam("doctorId") long id)
+    public Response deleteDoctor(@PathParam("doctorId") long id)
     {
-        m_doctorManager.deleteDoctor(id);
+        Response response;
 
-        return "{\n\t\"success\": \"Doctor deleted.\"\n}";
+        if(m_doctorManager.deleteDoctor(id))
+        {
+            response = Response.ok("Doctor deleted", MediaType.APPLICATION_JSON).build();
+        }
+        else
+        {
+            // On ne peut pas distinguer le NOT FOUND de l'erreur donc on met erreur
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\n\t\"error\": \"Error while deleting the Doctor.\"\n}").build();
+        }
+
+
+        return response;
     }
 
     /**
@@ -117,9 +135,9 @@ public class DoctorAPI
     @Path("{doctorId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public String updateDoctor(@PathParam("doctorId") long id, Doctor newDoctor)
+    public Response updateDoctor(@PathParam("doctorId") long id, Doctor newDoctor)
     {
-        String ret;
+        Response response;
 
         // Get the doctor to update
         Doctor doctor = m_doctorManager.readDoctor(id);
@@ -145,19 +163,21 @@ public class DoctorAPI
             try
             {
                 m_doctorManager.updateDoctor(doctor);
-                ret = "{\n\t\"success\": \"Doctor updated.\"\n}";
+                response = Response.ok("{\n\t\"success\": \"Doctor updated.\"\n}", MediaType.APPLICATION_JSON).build();
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                ret = "{\n\t\"error\": \"" + e.getMessage() + "\"\n}";
+                response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}").build();
             }
         }
         else
         {
-            ret = "{\n\t\"error\": \"No doctor found.\"\n}";
+            response = Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\n\t\"error\": \"No doctor found.\"\n}").build();
         }
 
-        return ret;
+        return response;
     }
 }

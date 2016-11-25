@@ -68,8 +68,9 @@ public class ManagedPatient extends DAOManager
     /**
      * Delete the entity corresponding to the given id.
      * @param id Entity id.
+     * @return True if the operation success otherwise false.
      */
-    public void deletePatient(long id)
+    public boolean deletePatient(long id)
     {
         // Before deleting entity set all appointments associated to the patient to NULL
         // Keep trace of previous appointments made
@@ -79,6 +80,6 @@ public class ManagedPatient extends DAOManager
             app.setPatient(null);
         }
 
-        deleteEntity(id, Patient.class);
+        return deleteEntity(id, Patient.class);
     }
 }
