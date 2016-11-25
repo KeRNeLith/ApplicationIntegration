@@ -1,4 +1,4 @@
-package webservice;
+package webservice.persons;
 
 import ejb.dao.persons.ManagedDoctor;
 import entities.persons.Doctor;
@@ -60,15 +60,17 @@ public class DoctorAPI
             }
             catch(IOException e)
             {
-                LOG.log(Level.SEVERE, "Unable to serialize a doctor." + e.getMessage());
-                response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
-                                .entity("{\n\t\"error\": \"Unable to serialize a doctor.\"\n}").build();
+                LOG.log(Level.SEVERE, "Unable to serialize a doctor.");
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                    .entity("{\n\t\"error\": \"Unable to serialize a doctor.\"\n}")
+                                    .build();
             }
         }
         else
         {
-            response = Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\n\t\"error\": \"Unable to find the doctor.\"\n}").build();
+            response = Response .status(Response.Status.NOT_FOUND)
+                                .entity("{\n\t\"error\": \"Unable to find the doctor.\"\n}")
+                                .build();
         }
 
         return response;
@@ -87,14 +89,16 @@ public class DoctorAPI
 
         if (m_doctorManager.createDoctor(doctor.getFirstname(), doctor.getLastname()) != null)
         {
-            response = Response.ok("{\n\t\"success\": \"Doctor " + doctor.getFirstname() + " "
-                            + doctor.getLastname() + " created.\"\n}",
-                            MediaType.APPLICATION_JSON).build();
+            response = Response.ok("{\n\t\"success\": \"Doctor "    + doctor.getFirstname() + " "
+                                                                    + doctor.getLastname() + " created.\"\n}",
+                                    MediaType.APPLICATION_JSON)
+                                .build();
         }
         else
         {
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while creating a doctor.\"\n}").build();
+            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"Error while creating a doctor.\"\n}")
+                                .build();
         }
 
         return response;
@@ -117,9 +121,10 @@ public class DoctorAPI
         }
         else
         {
-            // On ne peut pas distinguer le NOT FOUND de l'erreur donc on met erreur
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\n\t\"error\": \"Error while deleting the Doctor.\"\n}").build();
+            // It occurs a problem while trying to delete the doctor.
+            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"Error while deleting the doctor.\"\n}")
+                                .build();
         }
 
 
@@ -168,14 +173,16 @@ public class DoctorAPI
             catch(Exception e)
             {
                 e.printStackTrace();
-                response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}").build();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
+                                    .build();
             }
         }
         else
         {
-            response = Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\n\t\"error\": \"No doctor found.\"\n}").build();
+            response = Response .status(Response.Status.NOT_FOUND)
+                                .entity("{\n\t\"error\": \"No doctor found.\"\n}")
+                                .build();
         }
 
         return response;

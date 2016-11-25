@@ -56,8 +56,10 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
     }
 
     @Override
-    public void cancelAppointment(long id)
+    public boolean cancelAppointment(long id)
     {
+        boolean ret = false;
+
         Appointment app = readEntity(id, Appointment.class);
 
         if (app != null)
@@ -68,8 +70,10 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
             containingTimeSlot.removeAppointment(id);
             m_timeSlotEJB.updateTimeSlot(containingTimeSlot);
 
-            deleteEntity(id, Appointment.class);
+            ret = deleteEntity(id, Appointment.class);
         }
+
+        return ret;
     }
 
     @Override

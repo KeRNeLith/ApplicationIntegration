@@ -91,11 +91,11 @@ public abstract class DAOManager
         try
         {
             T entity = m_manager.find(classType, id);
-            if(entity != null) {
+            if(entity != null)
+            {
                 m_manager.remove(entity);
                 ret = true;
             }
-
         }
         catch (Exception e)
         {

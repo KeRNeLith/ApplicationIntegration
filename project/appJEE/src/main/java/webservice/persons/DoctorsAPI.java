@@ -1,4 +1,4 @@
-package webservice;
+package webservice.persons;
 
 import ejb.dao.persons.ManagedDoctor;
 import entities.persons.Doctor;
@@ -43,7 +43,8 @@ public class DoctorsAPI
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
     public Response getAllDoctors()
     {
-        Response response = Response.ok("{ }", MediaType.APPLICATION_JSON).build();
+        Response response = Response.ok("{}", MediaType.APPLICATION_JSON).build();
+
         List<Doctor> doctorList = null;
 
         // Get List of Doctors
@@ -54,8 +55,9 @@ public class DoctorsAPI
         catch(Exception e)
         {
             e.printStackTrace();
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}").build();
+            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
+                                .build();
         }
 
         // Create the JSON response including all Doctors.
@@ -74,8 +76,9 @@ public class DoctorsAPI
             catch (IOException e)
             {
                 LOG.log(Level.SEVERE, "Unable to serialize doctor list.");
-                response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
-                    .entity("{\n\t\"error\": \"Unable to serialize doctor list.\"\n}").build();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                    .entity("{\n\t\"error\": \"Unable to serialize doctor list.\"\n}")
+                                    .build();
             }
         }
 

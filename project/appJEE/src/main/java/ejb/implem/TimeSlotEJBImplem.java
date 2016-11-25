@@ -82,8 +82,7 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
                 m_appointmentEJB.cancelAppointment(appointment.getId());
             }
 
-            deleteEntity(id, TimeSlot.class);
-            ret = true;
+            ret = deleteEntity(id, TimeSlot.class);
         }
 
         return ret;
