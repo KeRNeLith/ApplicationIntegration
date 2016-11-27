@@ -1,17 +1,15 @@
 package ejb.implem;
 
 import ejb.dao.DAOManager;
+import ejb.dao.persons.ManagedPatient;
 import ejb.face.AppointmentEJB;
 import ejb.face.TimeSlotEJB;
-import entities.persons.Doctor;
 import entities.persons.Patient;
 import entities.timeslots.Appointment;
 import entities.timeslots.TimeSlot;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +20,12 @@ import java.util.List;
 @Stateless
 public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
 {
+    /**
+     * Patient EJB (injected).
+     */
+    @EJB
+    private ManagedPatient m_patientEJB;
+
     /**
      * Time Slot EJB (injected).
      */
@@ -77,9 +81,61 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
     }
 
     @Override
-    public boolean modifyAppointment(Appointment app)
+    public boolean modifyAppointment(long appointmentId, long newPatientId)
     {
-        // TODO
-        return false;
+        boolean ret = false;
+
+        Appointment app = readEntity(appointmentId, Appointment.class);
+        Patient newPatient = m_patientEJB.readPatient(newPatientId);
+        if (app != null && newPatient != null)
+        {
+            app.setPatient(newPatient);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean modifyAppointment(long id, Date newBegin, Date newEnd)
+    {
+        boolean ret = false;
+
+        Appointment app = readEntity(id, Appointment.class);
+        if (app != null)
+        {
+            TimeSlot containingTimeSlot = app.getTimeSlot();
+
+            // If update fails => there is not enough free time in the time slot,
+            // it means that the appointment should be change of time slot
+            if (!containingTimeSlot.updateAppointment(id, newBegin, newEnd))
+            {
+                // Get the list of possible new time slots
+                List<TimeSlot> possibleTimeSlots = m_timeSlotEJB.readAllTimeSlotsBetween(newBegin, newEnd);
+                // Suppress the current containing time slot because it is not usable.
+                possibleTimeSlots.removeIf(ts -> ts.getId() == containingTimeSlot.getId());
+
+                // Test all possible time slots, stop at the first time slot that fit new dates
+                for (TimeSlot ts : possibleTimeSlots)
+                {
+                    Appointment newApp = ts.addAppointment(newBegin, newEnd, app.getPatient());
+
+                    // New time slot found
+                    if (newApp != null)
+                    {
+                        // Update time slot with the new appointment
+                        m_timeSlotEJB.updateTimeSlot(ts);
+
+                        // Remove appointment from previous time slot
+                        cancelAppointment(id);
+
+                        ret = true;
+
+                        break;  // Stop search
+                    }
+                }
+            }
+        }
+
+        return ret;
     }
 }

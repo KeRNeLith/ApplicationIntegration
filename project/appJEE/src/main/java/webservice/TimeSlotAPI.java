@@ -62,14 +62,16 @@ public class TimeSlotAPI
             catch(IOException e)
             {
                 LOG.log(Level.SEVERE, "Unable to serialize a timeSlot.");
-                response = Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
-                        .entity("{\n\t\"error\": \"Unable to serialize a timeSlot.\"\n}").build();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                    .entity("{\n\t\"error\": \"Unable to serialize a timeSlot.\"\n}")
+                                    .build();
             }
         }
         else
         {
-            response = Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\n\t\"error\": \"Unable to find the timeSlot.\"\n}").build();
+            response = Response .status(Response.Status.NOT_FOUND)
+                                .entity("{\n\t\"error\": \"Unable to find the timeSlot.\"\n}")
+                                .build();
         }
 
         return response;
@@ -119,9 +121,10 @@ public class TimeSlotAPI
         }
         else
         {
-            // On ne peut pas distinguer le NOT FOUND de l'erreur donc on met erreur
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while deleting the TimeSlot.\"\n}").build();
+            // It occurs a problem while trying to delete the timeslot.
+            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"Error while deleting the TimeSlot.\"\n}")
+                                .build();
         }
 
         return response;
@@ -156,14 +159,16 @@ public class TimeSlotAPI
             catch(Exception e)
             {
                 e.printStackTrace();
-                response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}").build();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
+                                    .build();
             }
         }
         else
         {
-            response = Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\n\t\"error\": \"No timeSlot found.\"\n}").build();
+            response = Response .status(Response.Status.NOT_FOUND)
+                                .entity("{\n\t\"error\": \"No timeSlot found.\"\n}")
+                                .build();
         }
 
         return response;

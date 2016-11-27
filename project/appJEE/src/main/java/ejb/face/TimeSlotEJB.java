@@ -36,6 +36,14 @@ public interface TimeSlotEJB
     List<TimeSlot> readAllTimeSlotsFromDoctor(long id);
 
     /**
+     * Get the list of all time slots where the beginning date is after "begin" and end date is before "end".
+     * @param begin Begin date.
+     * @param end End date.
+     * @return List of TimeSlot.
+     */
+    List<TimeSlot> readAllTimeSlotsBetween(Date begin, Date end);
+
+    /**
      * Update data for the given time slot.
      * @param timeSlot TimeSlot entity.
      * @return Updated entity.

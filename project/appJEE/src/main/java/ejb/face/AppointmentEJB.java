@@ -38,9 +38,19 @@ public interface AppointmentEJB
     boolean cancelAppointment(long id);
 
     /**
-     * Modify the specified appointment.
-     * @param app TODO
+     * Modify the specified appointment by the new patient.
+     * @param appointmentId Appointment id.
+     * @param newPatientId Patient's id that will replace the current affected patient.
      * @return True if the operation succeed, otherwise false.
      */
-    boolean modifyAppointment(Appointment app);
+    boolean modifyAppointment(long appointmentId, long newPatientId);
+
+    /**
+     * Modify the specified appointment by the new patient.
+     * @param id Appointment id.
+     * @param newBegin New beginning date wanted for the given appointment.
+     * @param newEnd New date wanted for the given appointment.
+     * @return True if the operation succeed, otherwise false.
+     */
+    boolean modifyAppointment(long id, Date newBegin, Date newEnd);
 }

@@ -63,6 +63,12 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     }
 
     @Override
+    public List<TimeSlot> readAllTimeSlotsBetween(Date begin, Date end)
+    {
+        return getList("TimeSlot.findAllFollowingBetween", begin, end);
+    }
+
+    @Override
     public TimeSlot updateTimeSlot(TimeSlot timeSlot)
     {
         return updateEntity(timeSlot);
@@ -91,11 +97,8 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     @Override
     public List<TimeSlot> getAvailableTimeSlots()
     {
-        Query query = m_manager.createNamedQuery("TimeSlot.findAllFollowing");
-        query.setParameter(1, new Date(), TemporalType.TIMESTAMP);
-
         // List of time slots
-        List<TimeSlot> timeSlots = query.getResultList();
+        List<TimeSlot> timeSlots = getList("TimeSlot.findAllFollowing", new Date());
 
         // Collect time slots that have free slots
         List<TimeSlot> availableTimeSlots = timeSlots.stream().filter(timeSlot -> !timeSlot.isFull()).collect(Collectors.toList());

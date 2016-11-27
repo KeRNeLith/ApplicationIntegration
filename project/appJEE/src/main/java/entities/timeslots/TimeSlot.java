@@ -4,6 +4,7 @@ import entities.persons.Doctor;
 import entities.persons.Patient;
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import sun.security.krb5.internal.APOptions;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,6 +23,9 @@ import java.util.stream.Collectors;
     @NamedQuery(
                 name="TimeSlot.findAllFollowing",
                 query="SELECT ts FROM TimeSlot ts WHERE ts.m_end >= ?1 AND ts.m_doctor IS NOT NULL"),
+    @NamedQuery(
+                name="TimeSlot.findAllFollowingBetween",
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_begin <= ?1 AND ts.m_end >= ?2 AND ts.m_doctor IS NOT NULL"),
     @NamedQuery(
                 name="TimeSlot.findAllForDoctor",
                 query="SELECT ts FROM TimeSlot ts WHERE ts.m_doctor.m_id = ?1")
@@ -221,7 +225,7 @@ public class TimeSlot extends TimeInterval
      * Remove the appointment matching the given id.
      * @param id Appointment id.
      */
-    public void removeAppointment(long id)
+    public boolean removeAppointment(long id)
     {
         boolean supp = m_appointments.removeIf(a -> a.getId() == id);
 
@@ -229,6 +233,55 @@ public class TimeSlot extends TimeInterval
         {
             m_freeSlots = null; // For lazy computing => will compute free slots only on next getAvailableSlots call
         }
+
+        return supp;
+    }
+
+    /**
+     * Try to change dates for the given appointment id. If succeed changes are applied otherwise change nothing.
+     * @param id Appointment id.
+     * @param newBegin New beginning date for the given appointment.
+     * @param newEnd New ending date for the given appointment.
+     * @return True if update succeed, otherwise false.
+     */
+    public boolean updateAppointment(long id, Date newBegin, Date newEnd)
+    {
+        boolean ret = false;
+
+        // New dates at least match time slot dates
+        if (!newBegin.before(m_begin) && !newEnd.after(m_end))
+        {
+            Optional<Appointment> optionalAppointment = m_appointments.stream().filter(app -> app.getId() == id).findFirst();
+            if (optionalAppointment.isPresent())
+            {
+                Appointment app = optionalAppointment.get();
+                m_appointments.remove(app);
+
+                m_freeSlots = null;
+
+                // Check if the given time slot can receive the appointment with updated dates
+                Optional<TimeInterval> availableSlot = getAvailableSlots()  .stream()
+                                                                            .filter(ti -> !newBegin.before(ti.getBegin())
+                                                                                        && newEnd.before(ti.getEnd()))
+                                                                            .findFirst();
+
+                // At least one time interval available => Update succeed
+                if (availableSlot.isPresent())
+                {
+                    app.setBegin(newBegin);
+                    app.setEnd(newEnd);
+
+                    ret = true;
+                }
+                // Else update impossible due to mismatch with new dates => Add appointment to time slot like it was at the beginning
+
+                m_appointments.add(app);
+
+                m_freeSlots = null; // For lazy computing => will compute free slots only on next getAvailableSlots call
+            }
+        }
+
+        return ret;
     }
 
     // Accessors // Setters
