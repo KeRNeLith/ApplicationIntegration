@@ -2,17 +2,10 @@ package entities.timeslots;
 
 import entities.persons.Doctor;
 import entities.persons.Patient;
-import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import sun.security.krb5.internal.APOptions;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class that represent a time slot.
@@ -120,15 +113,10 @@ public class TimeSlot extends TimeInterval
         m_freeSlots.add(new TimeInterval(m_begin, m_end));
 
         // Loop on all busy time slots
-        for (Appointment app : m_appointments)
-        {
-            // Appointment is not considered when the patient is not affected
-            // But this is to keep a trace of appointments even if the patient has been deleted.
-            if (app.getPatient() != null)
-            {
-                m_freeSlots = occupSlot(m_freeSlots, app);
-            }
-        }
+        // Appointment is not considered when the patient is not affected
+        // But this is to keep a trace of appointments even if the patient has been deleted.
+        m_appointments.stream() .filter(app -> app.getPatient() != null)
+                                .forEachOrdered(app -> m_freeSlots = occupSlot(m_freeSlots, app));
     }
 
     /**
@@ -161,10 +149,7 @@ public class TimeSlot extends TimeInterval
                 {
                     result.add(new TimeInterval(appointmentEnd, freeSlot.getEnd()));
                 }
-                else
-                {
-                    // The whole slot is busy
-                }
+                // else : The whole slot is busy
             }
             // If appointment date is strictly before the free slot beginning (<)
             else if (appointmentBegin.before(freeSlot.getEnd()))

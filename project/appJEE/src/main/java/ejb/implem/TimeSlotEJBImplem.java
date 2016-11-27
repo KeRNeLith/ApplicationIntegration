@@ -6,15 +6,9 @@ import ejb.face.TimeSlotEJB;
 import entities.persons.Doctor;
 import entities.timeslots.Appointment;
 import entities.timeslots.TimeSlot;
-import sun.security.krb5.internal.APOptions;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,13 +53,13 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     @Override
     public List<TimeSlot> readAllTimeSlotsFromDoctor(long id)
     {
-        return getList("TimeSlot.findAllForDoctor", id);
+        return getList("TimeSlot.findAllForDoctor", TimeSlot.class, id);
     }
 
     @Override
     public List<TimeSlot> readAllTimeSlotsBetween(Date begin, Date end)
     {
-        return getList("TimeSlot.findAllFollowingBetween", begin, end);
+        return getList("TimeSlot.findAllFollowingBetween", TimeSlot.class, begin, end);
     }
 
     @Override
@@ -98,11 +92,9 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
     public List<TimeSlot> getAvailableTimeSlots()
     {
         // List of time slots
-        List<TimeSlot> timeSlots = getList("TimeSlot.findAllFollowing", new Date());
+        List<TimeSlot> timeSlots = getList("TimeSlot.findAllFollowing", TimeSlot.class, new Date());
 
         // Collect time slots that have free slots
-        List<TimeSlot> availableTimeSlots = timeSlots.stream().filter(timeSlot -> !timeSlot.isFull()).collect(Collectors.toList());
-
-        return availableTimeSlots;
+        return timeSlots.stream().filter(timeSlot -> !timeSlot.isFull()).collect(Collectors.toList());
     }
 }

@@ -29,10 +29,10 @@ public class DoctorsAPI
      */
     private static final Logger LOG = Logger.getLogger(DoctorsAPI.class.getCanonicalName());
 
-    @EJB
     /**
      * Manager of Doctor : EJB.
      */
+    @EJB
     private ManagedDoctor m_doctorManager;
 
     /**

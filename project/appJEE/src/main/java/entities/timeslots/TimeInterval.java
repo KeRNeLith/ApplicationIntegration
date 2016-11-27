@@ -1,7 +1,6 @@
 package entities.timeslots;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 
 /**
@@ -40,7 +39,7 @@ public class TimeInterval
     /**
      * Default Constructor.
      */
-    public TimeInterval()
+    TimeInterval()
     {
         this(new Date(), new Date());
     }
@@ -50,7 +49,7 @@ public class TimeInterval
      * @param begin Beginning date.
      * @param end Ending date.
      */
-    public TimeInterval(Date begin, Date end)
+    TimeInterval(Date begin, Date end)
     {
         setBegin(begin);
         setEnd(end);

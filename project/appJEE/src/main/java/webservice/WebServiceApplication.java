@@ -2,6 +2,7 @@ package webservice;
 
 import webservice.persons.DoctorAPI;
 import webservice.persons.DoctorsAPI;
+import webservice.timeslots.TimeSlotAPI;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

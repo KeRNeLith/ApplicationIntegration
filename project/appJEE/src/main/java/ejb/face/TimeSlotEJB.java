@@ -3,7 +3,6 @@ package ejb.face;
 import entities.persons.Doctor;
 import entities.timeslots.TimeSlot;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 

@@ -56,7 +56,7 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
     @Override
     public List<Appointment> readAllAppointmentsFromPatient(long id)
     {
-        return getList("Appointment.findAllForPatient", id);
+        return getList("Appointment.findAllForPatient", Appointment.class, id);
     }
 
     @Override
@@ -90,6 +90,8 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
         if (app != null && newPatient != null)
         {
             app.setPatient(newPatient);
+
+            ret = true;
         }
 
         return ret;
@@ -112,7 +114,7 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
                 // Get the list of possible new time slots
                 List<TimeSlot> possibleTimeSlots = m_timeSlotEJB.readAllTimeSlotsBetween(newBegin, newEnd);
                 // Suppress the current containing time slot because it is not usable.
-                possibleTimeSlots.removeIf(ts -> ts.getId() == containingTimeSlot.getId());
+                possibleTimeSlots.removeIf(ts -> ts.getId().equals(containingTimeSlot.getId()));
 
                 // Test all possible time slots, stop at the first time slot that fit new dates
                 for (TimeSlot ts : possibleTimeSlots)

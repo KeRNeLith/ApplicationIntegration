@@ -1,4 +1,4 @@
-package webservice;
+package webservice.timeslots;
 
 import ejb.face.TimeSlotEJB;
 import entities.timeslots.TimeSlot;
@@ -27,10 +27,10 @@ public class TimeSlotAPI
      */
     private static final Logger LOG = Logger.getLogger(TimeSlotAPI.class.getCanonicalName());
 
-    @EJB
     /**
      * Manager of TimeSlot : EJB.
      */
+    @EJB
     private TimeSlotEJB m_timeSlotManager;
 
     /**

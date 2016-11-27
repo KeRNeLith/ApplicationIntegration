@@ -36,7 +36,7 @@ public abstract class Person
     /**
      * Default constructor.
      */
-    public Person()
+    protected Person()
     {
         this(null, null);
     }
@@ -46,7 +46,7 @@ public abstract class Person
      * @param firstname Person's firstname.
      * @param lastname Person's lastname.
      */
-    public Person(String firstname, String lastname)
+    Person(String firstname, String lastname)
     {
         this.setFirstname(firstname);
         this.setLastname(lastname);

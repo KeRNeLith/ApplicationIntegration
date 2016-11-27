@@ -3,7 +3,7 @@ package ejb.dao;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -46,9 +46,9 @@ public abstract class DAOManager
      * @param args Query arguments.
      * @return List of required entities.
      */
-    protected <T> List<T> getList(String queryName, Object... args)
+    protected <T> List<T> getList(String queryName, Class<T> classType, Object... args)
     {
-        Query query = m_manager.createNamedQuery(queryName);
+        TypedQuery<T> query = m_manager.createNamedQuery(queryName, classType);
         for (int i = 0 ; i < args.length ; ++i)
         {
             query.setParameter((i + 1), args[i]);

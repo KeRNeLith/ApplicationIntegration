@@ -21,7 +21,6 @@ import java.util.Date;
 })
 @Entity
 @Table(name = "Appointment")
-
 @XmlRootElement(name="appointment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Appointment extends TimeInterval
@@ -59,8 +58,8 @@ public class Appointment extends TimeInterval
     public Appointment(Date begin, Date end, TimeSlot timeSlot, Patient patient)
     {
         super(begin, end);
-        setTimeSlot(timeSlot);
         setPatient(patient);
+        this.m_timeSlot = timeSlot;
     }
 
     // Getters // Setters
@@ -89,14 +88,5 @@ public class Appointment extends TimeInterval
     public TimeSlot getTimeSlot()
     {
         return m_timeSlot;
-    }
-
-    /**
-     * Set the time slot containing the appointment.
-     * @param timeSlot Time slot containing this appointment.
-     */
-    public void setTimeSlot(TimeSlot timeSlot)
-    {
-        this.m_timeSlot = timeSlot;
     }
 }

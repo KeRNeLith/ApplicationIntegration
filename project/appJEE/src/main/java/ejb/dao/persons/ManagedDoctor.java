@@ -8,7 +8,6 @@ import entities.timeslots.TimeSlot;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * Class that provide implementation of CRUD for Doctor entity.
@@ -60,7 +59,7 @@ public class ManagedDoctor extends DAOManager
      * Get the list of all doctors.
      * @return List of doctors.
      */
-    public List<Doctor> readAllDoctors() { return getList("Doctor.findAll"); }
+    public List<Doctor> readAllDoctors() { return getList("Doctor.findAll", Doctor.class); }
 
     /**
      * Update data for the given doctor.

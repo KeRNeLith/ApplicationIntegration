@@ -6,7 +6,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -26,10 +27,10 @@ public class DoctorAPI
      */
     private static final Logger LOG = Logger.getLogger(DoctorAPI.class.getCanonicalName());
 
-    @EJB
     /**
      * Manager of Doctor : EJB.
      */
+    @EJB
     private ManagedDoctor m_doctorManager;
 
     /**
