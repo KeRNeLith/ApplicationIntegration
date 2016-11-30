@@ -56,11 +56,17 @@ public class ManagedPatient extends DAOManager
     }
 
     /**
+     * Get the list of all patients.
+     * @return List of patients.
+     */
+    public List<Patient> readAllPatients() { return getList("Patient.findAll", Patient.class); }
+
+    /**
      * Update data for the given patient.
      * @param patient Patient entity.
      * @return Updated entity.
      */
-    public Patient updateDoctor(Patient patient)
+    public Patient updatePatient(Patient patient)
     {
         return updateEntity(patient);
     }

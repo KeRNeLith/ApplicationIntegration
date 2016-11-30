@@ -2,6 +2,8 @@ package webservice;
 
 import webservice.persons.DoctorAPI;
 import webservice.persons.DoctorsAPI;
+import webservice.persons.PatientAPI;
+import webservice.persons.PatientsAPI;
 import webservice.timeslots.TimeSlotAPI;
 
 import javax.ws.rs.ApplicationPath;
@@ -33,6 +35,10 @@ public class WebServiceApplication extends Application
         // Doctor APIs
         service.add(DoctorAPI.class);
         service.add(DoctorsAPI.class);
+
+        // Patient APIs
+        service.add(PatientAPI.class);
+        service.add(PatientsAPI.class);
 
         // TimeInterval APIs
         service.add(TimeSlotAPI.class);

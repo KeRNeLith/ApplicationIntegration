@@ -2,11 +2,7 @@ package entities.persons;
 
 import entities.timeslots.Appointment;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +10,15 @@ import java.util.List;
  * Class that represent a patient.
  * Created by kernelith on 13/11/16.
  */
+@NamedQueries(
+{
+    @NamedQuery(
+            name="Patient.findAll",
+            query="select patient from Patient patient")
+})
 @Entity
 @DiscriminatorValue("Patient")
 @Table(name = "Patient")
-@XmlRootElement
 public class Patient extends Person
 {
     /**
