@@ -24,6 +24,13 @@ public interface AppointmentEJB
     Appointment createAppointment(Date begin, Date end, TimeSlot timeSlot, Patient patient);
 
     /**
+     * Get an Appointment entity from persistence context.
+     * @param id Database appointment id.
+     * @return Appointment entity.
+     */
+    Appointment readAppointment(long id);
+
+    /**
      * Get the list of all appointments associated to the given patient id.
      * @param id Patient id.
      * @return List of Appointments.
@@ -47,10 +54,10 @@ public interface AppointmentEJB
 
     /**
      * Modify the specified appointment by the new patient.
-     * @param id Appointment id.
+     * @param appointmentId Appointment id.
      * @param newBegin New beginning date wanted for the given appointment.
      * @param newEnd New date wanted for the given appointment.
      * @return True if the operation succeed, otherwise false.
      */
-    boolean modifyAppointment(long id, Date newBegin, Date newEnd);
+    boolean modifyAppointment(long appointmentId, Date newBegin, Date newEnd);
 }

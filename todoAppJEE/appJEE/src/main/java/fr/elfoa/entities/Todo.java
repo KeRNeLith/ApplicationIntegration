@@ -77,18 +77,18 @@ public class Todo
         this.dueDate = dueDate;
     }
 
-    /**
-     * Constructeur par recopie.
-     * @param todo Todo.
-     */
-    public Todo(Todo todo)
-    {
-        this.id = todo.id;
-        this.name = todo.name;
-        this.done = todo.done;
-        this.dueDate = todo.dueDate;
-        this.user = todo.user;
-    }
+        /**
+         * Constructeur par recopie.
+         * @param todo Todo.
+         */
+        public Todo(Todo todo)
+        {
+            this.id = todo.id;
+            this.name = todo.name;
+            this.done = todo.done;
+            this.dueDate = todo.dueDate;
+            this.user = todo.user;
+        }
 
     /**
      * Get the name of the todo task.

@@ -54,6 +54,12 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
     }
 
     @Override
+    public Appointment readAppointment(long id)
+    {
+        return readEntity(id, Appointment.class);
+    }
+
+    @Override
     public List<Appointment> readAllAppointmentsFromPatient(long id)
     {
         return getList("Appointment.findAllForPatient", Appointment.class, id);

@@ -4,7 +4,10 @@ import webservice.persons.DoctorAPI;
 import webservice.persons.DoctorsAPI;
 import webservice.persons.PatientAPI;
 import webservice.persons.PatientsAPI;
+import webservice.timeslots.AppointmentAPI;
+import webservice.timeslots.AppointmentsAPI;
 import webservice.timeslots.TimeSlotAPI;
+import webservice.timeslots.TimeSlotsAPI;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -42,6 +45,11 @@ public class WebServiceApplication extends Application
 
         // TimeInterval APIs
         service.add(TimeSlotAPI.class);
+        service.add(TimeSlotsAPI.class);
+
+        // Appointments
+        service.add(AppointmentAPI.class);
+        service.add(AppointmentsAPI.class);
 
         return service;
     }

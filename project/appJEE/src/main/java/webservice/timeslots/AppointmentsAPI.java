@@ -1,12 +1,13 @@
-package webservice.persons;
+package webservice.timeslots;
 
-import ejb.dao.persons.ManagedPatient;
-import entities.persons.Patient;
+import ejb.face.AppointmentEJB;
+import entities.timeslots.Appointment;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,67 +19,66 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class that handle Patients web service routes.
- * Created by kernelith on 30/11/16.
+ * Class that handle Appointments web service routes.
+ * Created by ace_nanter on 02/12/16.
  */
-@Path("patients")
-public class PatientsAPI
+@Path("appointments")
+public class AppointmentsAPI
 {
     /**
      * Logger for patient web service.
      */
-    private static final Logger LOG = Logger.getLogger(PatientsAPI.class.getCanonicalName());
+    private static final Logger LOG = Logger.getLogger(AppointmentsAPI.class.getCanonicalName());
 
     /**
-     * Manager of Patient : EJB.
+     * Manager of Appointments : EJB.
      */
     @EJB
-    private ManagedPatient m_patientManager;
+    private AppointmentEJB m_appointmentManager;
 
     /**
-     * Get the list of Patient already created.
-     * @return A Response containing a list of Patient as JSON.
+     * Get the list of Appointments associated to the given patient.
+     * @param id Patient id.
+     * @return List of appointments as JSON.
      */
     @GET
+    @Path("{patientId}")
     @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
-    public Response getAllPatients()
+    public Response getAllAppointmentsFromPatient(@PathParam("patientId") long id)
     {
         Response response = Response.ok("{}", MediaType.APPLICATION_JSON).build();
+        List<Appointment> appointmentList = null;
 
-        List<Patient> patientList = null;
-
-        // Get List of Patients
+        // Get List of Appointments
         try
         {
-            patientList = m_patientManager.readAllPatients();
+            appointmentList = m_appointmentManager.readAllAppointmentsFromPatient(id);
         }
         catch(Exception e)
         {
             e.printStackTrace();
             response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                                .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
-                                .build();
+                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
+                    .build();
         }
 
-        // Create the JSON response including all patients.
-        if (patientList != null)
+        if(appointmentList != null)
         {
             ObjectMapper mapper = new ObjectMapper();
             Writer writer = new StringWriter();
-
             try
             {
-                mapper.writeValue(writer, patientList);
+                mapper.writeValue(writer, appointmentList);
 
                 writer.close();
                 response = Response.ok(writer.toString(), MediaType.APPLICATION_JSON).build();
             }
             catch (IOException e)
             {
-                LOG.log(Level.SEVERE, "Unable to serialize patient list.");
+                LOG.log(Level.SEVERE, "Unable to serialize appointment list.");
                 response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                                    .entity("{\n\t\"error\": \"Unable to serialize patient list.\"\n}")
-                                    .build();
+                        .entity("{\n\t\"error\": \"Unable to serialize appointment list.\"\n}")
+                        .build();
             }
         }
 

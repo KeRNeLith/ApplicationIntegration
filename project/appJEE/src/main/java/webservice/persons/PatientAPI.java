@@ -122,7 +122,7 @@ public class PatientAPI
         }
         else
         {
-            // It occurs a problem while trying to delete the doctor.
+            // It occurs a problem while trying to delete the pati.
             response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
                                 .entity("{\n\t\"error\": \"Error while deleting the patient.\"\n}")
                                 .build();

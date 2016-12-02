@@ -82,8 +82,7 @@ public class TimeSlotAPI
      * @param timeSlot TimeSlot to create. Sent using JSON.
      * @return Response indicating if the timeSlot has been created.
      */
-    /* TODO : A modifier : ajouter un ID de doctor en URL
-    @POST
+    /*@POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createTimeSlot(TimeSlot timeSlot)
     {
@@ -92,13 +91,15 @@ public class TimeSlotAPI
         if (m_timeSlotManager.createTimeSlot(timeSlot.getBegin(), timeSlot.getEnd(), timeSlot.getDoctor()) != null)
         {
             response = Response.ok("{\n\t\"success\": \"TimeSlot from " + timeSlot.getBegin() + " "
-                            + " to " + timeSlot.getEnd() + " with " + timeSlot.getDoctor() + " created.\"\n}",
+                            + " to " + timeSlot.getEnd() + " with " + timeSlot.getDoctor().getFirstname()
+                            + " " + timeSlot.getDoctor().getLastname() + " created.\"\n}",
                     MediaType.APPLICATION_JSON).build();
         }
         else
         {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while creating a timeSlot.\"\n}").build();
+                    .entity("{\n\t\"error\": \"Error while creating a timeSlot.\"\n}")
+                    .build();
         }
 
         return response;
@@ -143,34 +144,26 @@ public class TimeSlotAPI
     {
         Response response;
 
-        // Get the timeSlot to update
-        TimeSlot timeSlot = m_timeSlotManager.readTimeSlot(id);
-
-        if (timeSlot != null)
+        try
         {
-            // TODO : make verifications and then update. Fields : begin, end,
-
-            // Do the update
-            try
+            if(m_timeSlotManager.updateTimeSlot(newTimeSlot) != null)
             {
-                //m_timeSlotManager.updateTimeSlot(timeSlot);
                 response = Response.ok("{\n\t\"success\": \"TimeSlot updated.\"\n}", MediaType.APPLICATION_JSON).build();
             }
-            catch(Exception e)
+            else
             {
-                e.printStackTrace();
                 response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
-                                    .build();
+                    .entity("{\n\t\"error\": \"Error while updating the appointment.\"\n}")
+                    .build();
             }
         }
-        else
+        catch(Exception e)
         {
-            response = Response .status(Response.Status.NOT_FOUND)
-                                .entity("{\n\t\"error\": \"No timeSlot found.\"\n}")
-                                .build();
+            e.printStackTrace();
+            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
+                    .build();
         }
-
         return response;
     }
 }
