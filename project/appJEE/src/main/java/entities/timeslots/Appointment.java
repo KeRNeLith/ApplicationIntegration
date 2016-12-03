@@ -1,6 +1,7 @@
 package entities.timeslots;
 
 import entities.persons.Patient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -85,8 +86,12 @@ public class Appointment extends TimeInterval
      * Get the time slot containing the appointment.
      * @return Time slot.
      */
+    @JsonIgnore
     public TimeSlot getTimeSlot()
     {
         return m_timeSlot;
     }
+
+
+    protected void setTimeSlot(TimeSlot timeSlot) { m_timeSlot = timeSlot; }
 }

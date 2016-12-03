@@ -62,6 +62,12 @@ public abstract class Person
     }
 
     /**
+     * Set the person id.
+     * @param id new id.
+     */
+    protected void setId(Long id) { m_id = id; }
+
+    /**
      * Get the person's first name.
      * @return Person's first name.
      */

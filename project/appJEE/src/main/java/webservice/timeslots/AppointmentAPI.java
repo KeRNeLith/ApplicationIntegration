@@ -1,13 +1,19 @@
 package webservice.timeslots;
 
+import ejb.dao.persons.ManagedPatient;
 import ejb.face.AppointmentEJB;
+import ejb.face.TimeSlotEJB;
+import entities.persons.Patient;
 import entities.timeslots.Appointment;
+import entities.timeslots.TimeSlot;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that handle Appointment web service routes.
@@ -18,10 +24,27 @@ import java.util.Date;
 public class AppointmentAPI
 {
     /**
-     * Manager of TimeSlot : EJB.
+     * Logger for timeSlot web service.
+     */
+    private static final Logger LOG = Logger.getLogger(AppointmentAPI.class.getCanonicalName());
+
+    /**
+     * Manager of Appointment : EJB.
      */
     @EJB
     private AppointmentEJB m_appointmentManager;
+
+    /**
+     * Manager of Patient : EJB.
+     */
+    @EJB
+    private ManagedPatient m_patientManager;
+
+    /**
+     * Manager of TimeSlot : EJB.
+     */
+    @EJB
+    private TimeSlotEJB m_timeSlotManager;
 
     /**
      * Route to create a new appointment for a patient
@@ -34,19 +57,56 @@ public class AppointmentAPI
     {
         Response response;
 
-        if (m_appointmentManager.createAppointment(appointment.getBegin(), appointment.getEnd(),
-                appointment.getTimeSlot(), appointment.getPatient()) != null)
+        // Check if the patient and the timeSlot and their ids have been provided
+        if(appointment.getPatient() != null && appointment.getPatient().getId() != null
+                && appointment.getTimeSlot() != null && appointment.getTimeSlot().getId() != null)
         {
-            response = Response.ok("{\n\t\"success\": \"Appointment " + appointment.getBegin() + " "
-                            + appointment.getEnd() + " for " + appointment.getPatient().getFirstname()
-                            + " " + appointment.getPatient().getLastname() + " created.\"\n}",
-                    MediaType.APPLICATION_JSON)
-                    .build();
+            try
+            {
+                // Look if there are a patient and a timeSlot associated to the given IDs
+                Patient patient = m_patientManager.readPatient(appointment.getPatient().getId());
+                TimeSlot timeSlot = m_timeSlotManager.readTimeSlot(appointment.getTimeSlot().getId());
+
+                // If the patient and the timeSlot have been found
+                if(patient != null && timeSlot != null)
+                {
+                    // Create the appointment
+                    if (m_appointmentManager.createAppointment(appointment.getBegin(), appointment.getEnd(), timeSlot, patient) != null)
+                    {
+                        // Create the JSON response
+                        response = Response.ok("{\n\t\"success\": \"Appointment from " + appointment.getBegin() + " "
+                                        + " to " + appointment.getEnd() + " for " + patient.getFirstname()
+                                        + " " + patient.getLastname() + " created.\"\n}",
+                                MediaType.APPLICATION_JSON).build();
+                    }
+                    else
+                    {
+                        response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"Error while creating an appointment.\"\n}")
+                                .build();
+                    }
+                }
+                else
+                {
+                    response = Response .status(Response.Status.NOT_FOUND)
+                            .entity("{\n\t\"error\": \"Unable to find the patient and timeslot given.\"\n}")
+                            .build();
+                }
+            }
+            catch (Exception e)
+            {
+                LOG.log(Level.SEVERE, e.getMessage());
+                e.printStackTrace();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\n\t\"error\": \"Error while creating the appointment.\"\n}")
+                        .build();
+            }
+
         }
         else
         {
-            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while creating an appointment.\"\n}")
+            response = Response .status(Response.Status.BAD_REQUEST)
+                    .entity("{\n\t\"error\": \"No patient ID or no timeslot ID provided !\"\n}")
                     .build();
         }
 

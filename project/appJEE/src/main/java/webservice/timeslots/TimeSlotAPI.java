@@ -1,6 +1,8 @@
 package webservice.timeslots;
 
+import ejb.dao.persons.ManagedDoctor;
 import ejb.face.TimeSlotEJB;
+import entities.persons.Doctor;
 import entities.timeslots.TimeSlot;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -32,6 +34,12 @@ public class TimeSlotAPI
      */
     @EJB
     private TimeSlotEJB m_timeSlotManager;
+
+    /**
+     * Manager of Doctor : EJB.
+     */
+    @EJB
+    private ManagedDoctor m_doctorManager;
 
     /**
      * Get the TimeSlot selected.
@@ -82,28 +90,65 @@ public class TimeSlotAPI
      * @param timeSlot TimeSlot to create. Sent using JSON.
      * @return Response indicating if the timeSlot has been created.
      */
-    /*@POST
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createTimeSlot(TimeSlot timeSlot)
     {
         Response response;
 
-        if (m_timeSlotManager.createTimeSlot(timeSlot.getBegin(), timeSlot.getEnd(), timeSlot.getDoctor()) != null)
+        // Check if the doctor and its id have been provided
+        if(timeSlot.getDoctor() != null && timeSlot.getDoctor().getId() != null)
         {
-            response = Response.ok("{\n\t\"success\": \"TimeSlot from " + timeSlot.getBegin() + " "
-                            + " to " + timeSlot.getEnd() + " with " + timeSlot.getDoctor().getFirstname()
-                            + " " + timeSlot.getDoctor().getLastname() + " created.\"\n}",
-                    MediaType.APPLICATION_JSON).build();
+            try
+            {
+                // Look if there is a doctor associated to the given ID
+                Doctor doctor = m_doctorManager.readDoctor(timeSlot.getDoctor().getId());
+
+                // If the doctor has been found
+                if(doctor != null)
+                {
+                    // Create the TimeSlot
+                    if (m_timeSlotManager.createTimeSlot(timeSlot.getBegin(), timeSlot.getEnd(), doctor) != null)
+                    {
+                        // Create the JSON response
+                        response = Response.ok("{\n\t\"success\": \"TimeSlot from " + timeSlot.getBegin() + " "
+                                        + " to " + timeSlot.getEnd() + " with " + doctor.getFirstname()
+                                        + " " + doctor.getLastname() + " created.\"\n}",
+                                MediaType.APPLICATION_JSON).build();
+                    }
+                    else
+                    {
+                        response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                                .entity("{\n\t\"error\": \"Error while creating a timeSlot.\"\n}")
+                                .build();
+                    }
+                }
+                else
+                {
+                    response = Response .status(Response.Status.NOT_FOUND)
+                            .entity("{\n\t\"error\": \"Unable to find the doctor given.\"\n}")
+                            .build();
+                }
+            }
+            catch (Exception e)
+            {
+                LOG.log(Level.SEVERE, e.getMessage());
+                e.printStackTrace();
+                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\n\t\"error\": \"Error while creating the TimeSlot.\"\n}")
+                        .build();
+            }
+
         }
         else
         {
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while creating a timeSlot.\"\n}")
+            response = Response .status(Response.Status.BAD_REQUEST)
+                    .entity("{\n\t\"error\": \"No doctor ID provided !\"\n}")
                     .build();
         }
 
         return response;
-    }*/
+    }
 
     /**
      * Route to delete the timeSlot corresponding to the given id.
@@ -128,42 +173,6 @@ public class TimeSlotAPI
                                 .build();
         }
 
-        return response;
-    }
-
-    /**
-     * Route to update a timeSlot's name
-     * @param id ID of the timeSlot to update.
-     * @param newTimeSlot timeSlot containing update information.
-     * @return Response indicating if the update have been done.
-     */
-    @Path("{timeSlotId}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTimeSlot(@PathParam("timeSlotId") long id, TimeSlot newTimeSlot)
-    {
-        Response response;
-
-        try
-        {
-            if(m_timeSlotManager.updateTimeSlot(newTimeSlot) != null)
-            {
-                response = Response.ok("{\n\t\"success\": \"TimeSlot updated.\"\n}", MediaType.APPLICATION_JSON).build();
-            }
-            else
-            {
-                response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"Error while updating the appointment.\"\n}")
-                    .build();
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            response = Response .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\n\t\"error\": \"" + e.getMessage() + "\"\n}")
-                    .build();
-        }
         return response;
     }
 }

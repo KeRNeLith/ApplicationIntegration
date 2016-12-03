@@ -283,7 +283,6 @@ public class TimeSlot extends TimeInterval
      * Get the doctor providing the time slot.
      * @return Doctor providing the time slot.
      */
-    @JsonIgnore
     public Doctor getDoctor()
     {
         return m_doctor;

@@ -66,6 +66,12 @@ public class TimeInterval
     }
 
     /**
+     * Set the time interval id.
+     * @param id id of the time interval.
+     */
+    protected void setId(Long id) { m_id = id; }
+
+    /**
      * Get the beginning date.
      * @return Beginning date.
      */

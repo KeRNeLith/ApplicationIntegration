@@ -1,6 +1,7 @@
 package entities.persons;
 
 import entities.timeslots.TimeSlot;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class Doctor extends Person
      * Get the list of time slots provided by the doctor.
      * @return List of time slots provided by the doctor.
      */
+    @JsonIgnore
     public List<TimeSlot> getTimeSlots()
     {
         return m_timeSlots;

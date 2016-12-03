@@ -1,6 +1,7 @@
 package entities.persons;
 
 import entities.timeslots.Appointment;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class Patient extends Person
      * Get the list of patient's appointments.
      * @return List of patient's appointments.
      */
+    @JsonIgnore
     public List<Appointment> getAppointments()
     {
         return m_appointments;
