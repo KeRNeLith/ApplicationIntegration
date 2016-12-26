@@ -1,6 +1,9 @@
 package entities.timeslots;
 
 import javax.persistence.*;
+import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -90,6 +93,20 @@ public class TimeInterval
     }
 
     /**
+     * Set the beginning date.
+     * @param begin String containing the new beginning date.
+     */
+    public void setBegin(String begin)
+    {
+        Date dateBegin = parseDate(begin);
+
+        if(dateBegin != null)
+        {
+            m_begin = dateBegin;
+        }
+    }
+
+    /**
      * Get the ending date.
      * @return Ending date.
      */
@@ -100,10 +117,51 @@ public class TimeInterval
 
     /**
      * Set the ending date.
+     * @param end String containing the new ending date.
+     */
+    public void setEnd(String end)
+    {
+        Date dateEnd = parseDate(end);
+
+        if(dateEnd != null)
+        {
+            m_end = dateEnd;
+        }
+    }
+
+    /**
+     * Set the ending date.
      * @param end New ending date.
      */
     public void setEnd(Date end)
     {
         this.m_end = end;
+    }
+
+    /**
+     * Parse a date given in a String.
+     * @param s String containing a date.
+     * @return The date contained in the String.
+     */
+    private Date parseDate(String s)
+    {
+        Date date = null;
+
+        // Check the parameters are here
+        if(s != null && !s.isEmpty())
+        {
+            // Parse the dates
+            try
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                date = sdf.parse(s);
+            }
+            catch (ParseException e)
+            {
+                date = null;
+            }
+        }
+
+        return date;
     }
 }

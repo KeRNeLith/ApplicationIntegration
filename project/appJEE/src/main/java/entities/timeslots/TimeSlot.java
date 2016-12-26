@@ -18,7 +18,7 @@ import java.util.*;
                 query="SELECT ts FROM TimeSlot ts WHERE ts.m_end >= ?1 AND ts.m_doctor IS NOT NULL"),
     @NamedQuery(
                 name="TimeSlot.findAllFollowingBetween",
-                query="SELECT ts FROM TimeSlot ts WHERE ts.m_begin <= ?1 AND ts.m_end >= ?2 AND ts.m_doctor IS NOT NULL"),
+                query="SELECT ts FROM TimeSlot ts WHERE ts.m_begin >= ?1 AND ts.m_end <= ?2 AND ts.m_doctor IS NOT NULL"),
     @NamedQuery(
                 name="TimeSlot.findAllForDoctor",
                 query="SELECT ts FROM TimeSlot ts WHERE ts.m_doctor.m_id = ?1")

@@ -22,8 +22,6 @@ import java.util.Date;
 })
 @Entity
 @Table(name = "Appointment")
-@XmlRootElement(name="appointment")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Appointment extends TimeInterval
 {
     /**
@@ -31,7 +29,6 @@ public class Appointment extends TimeInterval
      */
     @ManyToOne
     @JoinColumn(name = "timeSlotId")
-    @XmlElement(required = true)
     private TimeSlot m_timeSlot;
 
     /**
@@ -68,6 +65,7 @@ public class Appointment extends TimeInterval
      * Get the patient concerned by the appointment.
      * @return Patient concerned by the appointment.
      */
+    @JsonIgnore
     public Patient getPatient()
     {
         return m_patient;
@@ -92,6 +90,9 @@ public class Appointment extends TimeInterval
         return m_timeSlot;
     }
 
-
+    /**
+     * Set the timeSlot associated to the appointment.
+     * @param timeSlot Associated Time slot.
+     */
     protected void setTimeSlot(TimeSlot timeSlot) { m_timeSlot = timeSlot; }
 }

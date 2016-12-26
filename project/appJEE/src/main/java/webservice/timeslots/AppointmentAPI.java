@@ -50,7 +50,7 @@ public class AppointmentAPI
      * Route to create a new appointment for a patient
      * @param appointment Appointment to create. Sent using JSON.
      * @return Response indicating if the appointment has been created.
-     *//*
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAppointment(Appointment appointment)
@@ -111,7 +111,7 @@ public class AppointmentAPI
         }
 
         return response;
-    }*/
+    }
 
     @DELETE
     @Path("{appointmentId}")
@@ -154,7 +154,7 @@ public class AppointmentAPI
             Date end = newAppointement.getEnd();
 
             // Retrieves patient
-            long patientId = (newAppointement.getPatient() != null) ? newAppointement.getPatient().getId() : -1;
+            long patientId = (newAppointement.getPatient().getId() != null) ? newAppointement.getPatient().getId() : -1;
 
             try
             {

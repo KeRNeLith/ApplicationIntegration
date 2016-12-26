@@ -9,6 +9,7 @@ import entities.timeslots.TimeSlot;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,8 +78,10 @@ public class TimeSlotEJBImplem extends DAOManager implements TimeSlotEJB
         TimeSlot timeSlot = readTimeSlot(id);
         if (timeSlot != null)
         {
-            for (Appointment appointment : timeSlot.getAppointments())
+            // Use of a classical loop to avoid concurrent modification
+            for (int i = 0 ; i < timeSlot.getAppointments().size() ; ++i)
             {
+                Appointment appointment = timeSlot.getAppointments().get(i);
                 m_appointmentEJB.cancelAppointment(appointment.getId());
             }
 

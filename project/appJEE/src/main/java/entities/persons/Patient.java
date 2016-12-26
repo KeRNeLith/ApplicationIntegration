@@ -51,9 +51,13 @@ public class Patient extends Person
      * Get the list of patient's appointments.
      * @return List of patient's appointments.
      */
-    @JsonIgnore
     public List<Appointment> getAppointments()
     {
         return m_appointments;
+    }
+
+    public boolean removeAppointment(long id)
+    {
+        return m_appointments.removeIf(a -> a.getId() == id);
     }
 }

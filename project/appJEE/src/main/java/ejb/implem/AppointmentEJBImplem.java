@@ -75,10 +75,15 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
         if (app != null)
         {
             TimeSlot containingTimeSlot = app.getTimeSlot();
+            Patient relatedPatient = app.getPatient();
 
             // Update time slot => remove appointment
             containingTimeSlot.removeAppointment(id);
             m_timeSlotEJB.updateTimeSlot(containingTimeSlot);
+
+            // Update patient => remove appointment
+            relatedPatient.removeAppointment(id);
+            m_patientEJB.updatePatient(relatedPatient);
 
             ret = deleteEntity(id, Appointment.class);
         }
@@ -141,6 +146,11 @@ public class AppointmentEJBImplem extends DAOManager implements AppointmentEJB
                         break;  // Stop search
                     }
                 }
+            }
+            // Update has succeeded
+            else
+            {
+                ret = true;
             }
         }
 
