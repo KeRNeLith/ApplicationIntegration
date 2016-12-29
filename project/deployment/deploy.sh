@@ -2,11 +2,12 @@
 
 # Exécutables requis pour l'exécution de ce script
 echo
-echo "Bienvenue dans l'installation de l'application doctorOffice."
+echo "Bienvenue dans l'assistant de déploiement de l'application doctorOffice."
 echo
 echo "Pour le bon déroulement de ce programme d'installation, les programmes suivants doivent être installés sur votre machine : "
-echo "  - Java"
-echo "  - Unzip"
+echo "  - java"
+echo "  - unzip"
+echo "  - tar"
 
 # Etape 1 : Rechercher si Java et unzip sont installés.
 echo
@@ -24,7 +25,7 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
     echo "Aucune installation de Java trouvée."
-    echo "Sortie du programme..."
+    echo "Sortie de l'assistant..."
     exit
 fi
 
@@ -38,7 +39,7 @@ if type -p unzip; then
     echo "Installation de unzip trouvée."
 else
     echo "Aucune installation de unzip trouvée."
-    echo "Sortie du programme..."
+    echo "Sortie de l'assistant..."
     exit
 fi
 
@@ -76,12 +77,13 @@ while true; do
             # Suppression de la base de données
             echo "Suppression de la base de données"
             mysql --user=root --password=$mysqlpwd --execute='DROP DATABASE doctorOffice;'
+            # Création de la base de données
             echo "Creation de la base de données"
             mysql --user=root --password=$mysqlpwd --execute='CREATE DATABASE doctorOffice;'
             break;;
         [Nn]*)
             echo "Merci de sauvegarder cette base de données pour que nous puissons la remplacer."
-            echo "Sortie du programme..."
+            echo "Sortie de l'assistant..."
             exit
             break;;
         *)
@@ -92,7 +94,7 @@ done
 # Création d'un utilisateur dédié
 echo "Creation d'un utilisateur MySQL..."
 mysql --user=root --password=$mysqlpwd --execute='CREATE USER "appJEE"@"localhost" IDENTIFIED BY "password";'
-mysql --user=root --pasword=$mysqlpwd --execute='GRANT CREATE, DROP, DELETE, INSERT, SELECT, UPDATE ON doctorOffice.* TO "appJEE"@"localhost";'
+mysql --user=root --password=$mysqlpwd --execute='GRANT CREATE, DROP, DELETE, INSERT, SELECT, UPDATE ON doctorOffice.* TO "appJEE"@"localhost";'
 
 # Etape 3 : Installation et configuration de Payara.
 echo
@@ -109,9 +111,9 @@ while true; do
             # Installation et téléchargement de Payara.
             echo "Installation de Payara en cours..."
             echo "Lancement du téléchargement de Payara"
-            # wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.1.164/payara-4.1.1.164.zip
+            wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.1.164/payara-4.1.1.164.zip
             unzip payara-4.1.1.164.zip
-            # rm payara-4.1.1.164.zip
+            rm payara-4.1.1.164.zip
             asadmin=./payara41/bin/asadmin
             break;;
         [Nn]*)
@@ -123,25 +125,82 @@ while true; do
     esac
 done
 
+# Importation de la librairie MySQL
 echo
 echo "----------------------------------------"
-echo "Mise en place des variables"
+echo "Importation de la librairie MySQL"
 echo "----------------------------------------"
 echo
 
-read -p "Enter the name of the admin account : " asadminlogin
-read -p "Enter the password of the admin account : " -s asadminpwd
+wget http://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-5.1.40.tar.gz
+tar -xvf mysql-connector-java-5.1.40.tar.gz
+# Copie du jar
+cp ./mysql-connector-java-5.1.40/mysql-connector-java-5.1.40-bin.jar ./payara41/glassfish/lib/
+rm -r mysql-connector-java-5.1.40
+rm mysql-connector-java-5.1.40.tar.gz
+
+# Lancement du serveur
+echo
+echo "----------------------------------------"
+echo "Lancement du serveur"
+echo "----------------------------------------"
+echo
+
+$asadmin start-domain
+
+echo "Serveur lancé"
+
+# Configuration de Payara
+echo
+echo "----------------------------------------"
+echo "Configuration de Payara"
+echo "----------------------------------------"
+echo
+
+read -p "Enter the name of the Payara admin account : " asadminlogin
+read -p "Enter the password of the Payara admin account : " -s asadminpwd
 echo "AS_ADMIN_PASSWORD=$asadminpwd" > credentials.dat
 
 # Configuration du connection pool
 $asadmin --passwordfile credentials.dat create-jdbc-connection-pool --datasourceclassname "com.mysql.jdbc.jdbc2.optional.MysqlDataSource" --restype "javax.sql.DataSource" --property User=appJEE:Password=password:URL="jdbc\:mysql\://localhost\:3306/doctorOffice":Url="jdbc\:mysql\://localhost\:3306/doctorOffice" DoctorOffice
 
+# Configuration de la ressource
+$asadmin --passwordfile credentials.dat create-jdbc-resource --connectionpoolid DoctorOffice doctoroffice
 
+echo "Payara configuré."
 
-# TODO : ajout artefact
+rm credentials.dat
 
-# Lancement firefox ou Chrome
+# Etape 4 : Déploiement de l'artéfact
+echo
+echo "----------------------------------------"
+echo "Déploiement application"
+echo "----------------------------------------"
+echo
 
-echo "Sortie du programme de configuration..."
+echo "Déploiement de l'application doctorOffice"
+$asadmin deploy ./doctorOffice.war
 
+echo "L'application est lancée, rendez-vous sur http://localhost:8080/doctorOffice/"
+echo
 
+# Etape 5 : Arrêt du serveur
+read -p "Pour arrêter le serveur, appuyez sur une touche..."
+
+while true; do
+    read -p "Voulez-vous arrêter le serveur ? (y/n) " yn
+    case $yn in
+        [Yy]*)
+            # Arrêt du serveur
+            echo "Arrêt de Payara"
+            $asadmin stop-domain
+            echo "Serveur arrêté."
+            echo "Sortie de l'assistant..."
+            exit
+            break;;
+        [Nn]*)
+            read -p "Pour arrêter le serveur, appuyez sur une touche...";;
+        *)
+            echo "Veuillez répondre y ou n";;
+    esac
+done
